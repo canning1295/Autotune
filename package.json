@@ -1,0 +1,14 @@
+{
+  "name": "autotune",
+  "lockfileVersion": 2,
+  "requires": true,
+  "packages": {},
+  "version": "1.0.0",
+  "description": "Fine tune pump basal rates, IC ratio, and ISF.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Canning1295",
+  "license": "ISC"
+}
