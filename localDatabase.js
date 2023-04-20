@@ -1,4 +1,4 @@
-export function addUserToDB() {
+export function addUserToDB(options) {
 	console.log('Initializing IndexedDB')
 	const dbName = `autotuneDB_${options.user}` // Database name
 	const storeName = `user_data_${options.user}` // Store name

@@ -1,6 +1,7 @@
 //Import getUserProfiles from getData.js
 import {getUserProfiles, getBGs} from "./getData.js"
-import * from "./localDatabase.js"
+import * as db from "./localDatabase.js";
+
 
 export const options = {
 	url: "https://canning.herokuapp.com/",
@@ -18,6 +19,6 @@ export const options = {
 }
 
 // getUserProfiles(options)
-addUserToDB()
+db.addUserToDB(options)
 // getBGs(options)
 
