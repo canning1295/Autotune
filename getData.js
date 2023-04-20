@@ -1,4 +1,4 @@
-let profile = undefined
+let profileData = undefined
 
 export async function getUserProfiles(options) {
 	console.log("getAllProfiles started")
@@ -6,44 +6,47 @@ export async function getUserProfiles(options) {
 		options.url + "api/v1/profile.json?count=10000000"
 	)
 	console.log("Profile: ", options.url, "api/v1/profile.json?count=10000000")
-	profile = (await response.json()).reverse()
-	profile = setProfiles(profile, options)
-	return profile
+	profileData = (await response.json()).reverse()
+	profileData = setProfiles(profileData, options)
+	return profileData
 }
 
 // This returns default profile settings for the period selected
-export async function setProfiles(profile, options) {
-	console.log("setProfiles started")
-	const basalProfiles = []
-	let start = false
-	for (let i = 0; i < profile.length; i++) {
-		let obj = profile[i]
-		let startDate = new Date(obj.startDate)
-		let endDate = new Date(
-			i + 1 < profile.length ? profile[i + 1].startDate : new Date()
-		)
-		let basalProfile = {
-			startDate: startDate,
-			endDate: endDate,
-			basal: obj.store.Default.basal,
-			carbRatio: obj.store.Default.carbratio,
-			isf: obj.store.Default.sens,
-			lowTarget: obj.store.Default.target_low,
-			highTarget: obj.store.Default.target_high,
-		}
-		if (options.dateStart > startDate && options.dateStart < endDate) {
-			basalProfiles.push(basalProfile)
-			start = true
-		} else if (options.dateEnd > startDate && options.dateEnd < endDate) {
-			basalProfiles.push(basalProfile)
-			break
-		} else if (start) {
-			basalProfiles.push(basalProfile)
-		}
+export async function setProfiles(profileData, options) {
+	const profiles = [];
+	let start = false;
+	for (let i = 0; i < profileData.length; i++) {
+	  let obj = profileData[i];
+	  let startDate = new Date(obj.startDate);
+	  let endDate = new Date(
+		i + 1 < profileData.length ? profileData[i + 1].startDate : new Date()
+	  );
+	  let basalProfile = {
+		startDate: startDate,
+		endDate: endDate,
+		basal: obj.store.Default.basal,
+		carbRatio: obj.store.Default.carbratio,
+		isf: obj.store.Default.sens,
+		lowTarget: obj.store.Default.target_low,
+		highTarget: obj.store.Default.target_high,
+	  };
+	  if (options.dateStart > startDate && options.dateStart < endDate) {
+		profiles.push(basalProfile);
+		start = true;
+	  } else if (options.dateEnd > startDate && options.dateEnd < endDate) {
+		profiles.push(basalProfile);
+		break;
+	  } else if (start) {
+		profiles.push(basalProfile);
+	  }
 	}
-	console.log("Basal Profiles111111111111:", basalProfiles)
-	return basalProfiles
-}
+
+	const key = 'profiles'; // Replace with the actual key
+  
+	const lastSavedTimestamp = new Date().getTime(); // Save the current timestamp
+	await saveData(options.user, key, profiles, lastSavedTimestamp); // Save the profiles to IndexedDB
+  }
+  
 let bgsArray = []
 export async function getBGs(options) {
 	const bgUrl = options.url.concat(

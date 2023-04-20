@@ -34,24 +34,31 @@ export function addUserToDB(options) {
 	}
 }
 
-export function saveData(username, key, data) {
+export function saveData(username, key, data, lastSavedTimestamp) {
     const dbName = `autotuneDB`;
     const storeName = `user_data_${username}`;
     const openRequest = indexedDB.open(dbName);
-
-    openRequest.onsuccess = function(event) {
-        const db = event.target.result;
-        const transaction = db.transaction(storeName, 'readwrite');
-        const store = transaction.objectStore(storeName);
-
-        // Convert the data to a storable format
-        const value = JSON.stringify({ type: typeof data, value: data });
-
-        // Save the data to the object store
-        store.put(value, key);
+  
+    openRequest.onupgradeneeded = function (event) {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(storeName)) {
+        db.createObjectStore(storeName);
+      }
     };
-}
-
+  
+    openRequest.onsuccess = function (event) {
+      const db = event.target.result;
+      const transaction = db.transaction(storeName, 'readwrite');
+      const store = transaction.objectStore(storeName);
+  
+      // Convert the data to a storable format
+      const value = JSON.stringify({ type: typeof data, value: data, lastSavedTimestamp });
+  
+      // Save the data to the object store
+      store.put(value, key);
+    };
+  }
+  
 export function getData(username, key) {
     return new Promise((resolve, reject) => {
         const dbName = `autotuneDB`;
@@ -87,3 +94,56 @@ export function getData(username, key) {
         };
     });
 }
+
+export function getTimestamp(username, key) {
+    return new Promise((resolve, reject) => {
+      const dbName = `autotuneDB`;
+      const storeName = `user_data_${username}`;
+      const openRequest = indexedDB.open(dbName);
+  
+      openRequest.onupgradeneeded = function (event) {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(storeName)) {
+          db.createObjectStore(storeName);
+        }
+      };
+  
+      openRequest.onsuccess = function (event) {
+        const db = event.target.result;
+        const transaction = db.transaction(storeName, 'readonly');
+        const store = transaction.objectStore(storeName);
+  
+        // Retrieve the data for the specified key
+        const getRequest = store.get(key);
+  
+        getRequest.onsuccess = function (event) {
+          const result = event.target.result;
+  
+          if (result) {
+            // Parse the JSON result
+            const parsedResult = JSON.parse(result);
+  
+            // Retrieve the lastSavedTimestamp value
+            const lastSavedTimestamp = parsedResult.lastSavedTimestamp;
+  
+            // Resolve the Promise with the lastSavedTimestamp value
+            resolve(lastSavedTimestamp);
+          } else {
+            // If there's no data for the specified key, resolve the Promise with null
+            resolve(null);
+          }
+        };
+  
+        getRequest.onerror = function (event) {
+          console.error('Error retrieving data from IndexedDB:', event);
+          reject(event);
+        };
+      };
+  
+      openRequest.onerror = function (event) {
+        console.error('Error opening IndexedDB:', event);
+        reject(event);
+      };
+    });
+  }
+  
