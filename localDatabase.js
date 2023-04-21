@@ -1,149 +1,169 @@
-export function addUserToDB(options) {
-	console.log('Initializing IndexedDB')
-	const dbName = `autotuneDB_${options.user}` // Database name
-	const storeName = `user_data_${options.user}` // Store name
-	const openRequest = indexedDB.open(dbName);
+let db;
 
-	openRequest.onsuccess = function(event) {
-		const db = event.target.result;
-		if (db.objectStoreNames.contains(storeName)) {
-			console.log('Object store exists', storeName);
-		} else {
-			console.log('Object store does not exist', storeName);
-		}
-	}
+export async function initializeDB(options) {
+  // Check for IndexedDB support
+  if (!('indexedDB' in window)) {
+    alert('This browser does not support IndexedDB. Please use a modern browser like Chrome, Firefox, or Safari for better experience.');
+    return;
+  }
 
-	openRequest.onerror = function (event) {
-		console.error("Error opening IndexedDB database", event.target.error)
-	}
+  const dbName = 'Autotune';
+  const dbVersion = 1;
 
-	openRequest.onupgradeneeded = function (event) {
-		// console.log('onupgradeneeded called', event)
-		const db = event.target.result
+  return new Promise((resolve, reject) => {
+    // Open or create the database
+    const request = indexedDB.open(dbName, dbVersion);
 
-		// Check if the object store already exists
-		if (!db.objectStoreNames.contains(storeName)) {
-			// If it doesn't, create the object store
-			const store = db.createObjectStore(storeName)
-			console.log('Created object store', storeName)
-			// You can also define any indexes or other properties of the object store here
-			// store.createIndex(...);
-		} else {
-			console.log('Object store exists', storeName)
-		}
-	}
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+
+      // Create the object store(s) and index(es) you need
+      // Example: Creating an object store named 'settings'
+      const objectStore = db.createObjectStore(options.user, { keyPath: 'key' });
+
+      console.log('Database upgrade is complete');
+    };
+
+    request.onsuccess = (event) => {
+      db = event.target.result;
+      console.log('Database opened successfully:', db);
+      resolve(db);
+    };
+
+    request.onerror = (event) => {
+      console.log('Error opening database:', event.target.errorCode);
+      reject(event.target.error);
+    };
+  });
 }
 
-export function saveData(username, key, data, lastSavedTimestamp) {
-    const dbName = `autotuneDB`;
-    const storeName = `user_data_${username}`;
-    const openRequest = indexedDB.open(dbName);
-  
-    openRequest.onupgradeneeded = function (event) {
-      const db = event.target.result;
-      if (!db.objectStoreNames.contains(storeName)) {
-        db.createObjectStore(storeName);
+export async function saveData(objectStoreName, key, value, timestamp) {
+  // Get the data type of the variable
+  let dataType = typeof value;
+
+  // Check for Date objects and null
+  if (value instanceof Date) {
+    dataType = 'date';
+  } else if (value === null) {
+    dataType = 'null';
+  }
+
+  // Convert objects to string, except for Date objects
+  if (dataType === 'object' && !(value instanceof Date)) {
+    value = JSON.stringify(value);
+  }
+
+  // Define the data object to store, including the variable name, value, and data type
+  const dataObject = {
+    key: key,
+    value: value,
+    dataType: dataType,
+    timestamp: timestamp
+  };
+
+  return new Promise((resolve, reject) => {
+    // Create a transaction with readwrite mode
+    const transaction = db.transaction([objectStoreName], 'readwrite');
+
+    // Get the object store
+    const objectStore = transaction.objectStore(objectStoreName);
+
+    // Add or update the data object in the object store using the put method
+    const putRequest = objectStore.put(dataObject);
+
+    // Handle the success event of the put request
+    putRequest.onsuccess = (event) => {
+      console.log('Data saved to the database:', event.target.result);
+      resolve(event.target.result);
+    };
+
+    // Handle the error event of the put request
+    putRequest.onerror = (event) => {
+      console.log('Error saving data to the database:', event.target.error);
+      reject(event.target.error);
+    };
+  });
+}
+
+export async function getData(objectStoreName, key) {
+  return new Promise((resolve, reject) => {
+    // Create a transaction with readonly mode
+    const transaction = db.transaction([objectStoreName], 'readonly');
+
+    // Get the object store
+    const objectStore = transaction.objectStore(objectStoreName);
+
+    // Get the data object using the specified key
+    const getRequest = objectStore.get(key);
+
+    // Handle the success event of the get request
+    getRequest.onsuccess = (event) => {
+      const dataObject = event.target.result;
+
+      if (dataObject) {
+        let value = dataObject.value;
+
+        // Parse the value based on its data type
+        switch (dataObject.dataType) {
+          case 'object':
+          case 'array':
+            value = JSON.parse(value);
+            break;
+          case 'date':
+            value = new Date(value);
+            break;
+          case 'null':
+            value = null;
+            break;
+          default:
+            break;
+        }
+
+        // console.log(`Data retrieved for key '${key}':`, value);
+        resolve(value);
+      } else {
+        console.log(`No data found for key '${key}'`);
+        resolve(null);
       }
     };
-  
-    openRequest.onsuccess = function (event) {
-      const db = event.target.result;
-      const transaction = db.transaction(storeName, 'readwrite');
-      const store = transaction.objectStore(storeName);
-  
-      // Convert the data to a storable format
-      const value = JSON.stringify({ type: typeof data, value: data, lastSavedTimestamp });
-  
-      // Save the data to the object store
-      store.put(value, key);
+
+    // Handle the error event of the get request
+    getRequest.onerror = (event) => {
+      console.log('Error retrieving data:', event.target.error);
+      reject(event.target.error);
     };
-  }
-  
-export function getData(username, key) {
-    return new Promise((resolve, reject) => {
-        const dbName = `autotuneDB`;
-        const storeName = `user_data_${username}`;
-        const openRequest = indexedDB.open(dbName);
-
-        openRequest.onsuccess = function(event) {
-            const db = event.target.result;
-            const transaction = db.transaction(storeName);
-            const store = transaction.objectStore(storeName);
-            const getRequest = store.get(key);
-
-            getRequest.onsuccess = function(event) {
-                // Convert the data back to its original form
-                let data;
-                try {
-                    const parsedData = JSON.parse(event.target.result);
-                    data = parsedData.value;
-                } catch (error) {
-                    data = event.target.result;
-                }
-
-                resolve(data);
-            };
-
-            getRequest.onerror = function(event) {
-                reject(event.target.error);
-            };
-        };
-
-        openRequest.onerror = function(event) {
-            reject(event.target.error);
-        };
-    });
+  });
 }
 
-export function getTimestamp(username, key) {
-    return new Promise((resolve, reject) => {
-      const dbName = `autotuneDB`;
-      const storeName = `user_data_${username}`;
-      const openRequest = indexedDB.open(dbName);
-  
-      openRequest.onupgradeneeded = function (event) {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains(storeName)) {
-          db.createObjectStore(storeName);
-        }
-      };
-  
-      openRequest.onsuccess = function (event) {
-        const db = event.target.result;
-        const transaction = db.transaction(storeName, 'readonly');
-        const store = transaction.objectStore(storeName);
-  
-        // Retrieve the data for the specified key
-        const getRequest = store.get(key);
-  
-        getRequest.onsuccess = function (event) {
-          const result = event.target.result;
-  
-          if (result) {
-            // Parse the JSON result
-            const parsedResult = JSON.parse(result);
-  
-            // Retrieve the lastSavedTimestamp value
-            const lastSavedTimestamp = parsedResult.lastSavedTimestamp;
-  
-            // Resolve the Promise with the lastSavedTimestamp value
-            resolve(lastSavedTimestamp);
-          } else {
-            // If there's no data for the specified key, resolve the Promise with null
-            resolve(null);
-          }
-        };
-  
-        getRequest.onerror = function (event) {
-          console.error('Error retrieving data from IndexedDB:', event);
-          reject(event);
-        };
-      };
-  
-      openRequest.onerror = function (event) {
-        console.error('Error opening IndexedDB:', event);
-        reject(event);
-      };
-    });
-  }
-  
+export async function getTimestamp(objectStoreName, key) {
+  return new Promise((resolve, reject) => {
+    // Create a transaction with readonly mode
+    const transaction = db.transaction([objectStoreName], 'readonly');
+
+    // Get the object store
+    const objectStore = transaction.objectStore(objectStoreName);
+
+    // Get the data object using the specified key
+    const getRequest = objectStore.get(key);
+
+    // Handle the success event of the get request
+    getRequest.onsuccess = (event) => {
+      const dataObject = event.target.result;
+
+      if (dataObject) {
+        const timestamp = dataObject.timestamp;
+        console.log(`Timestamp retrieved for key '${key}':`, timestamp);
+        resolve(timestamp);
+      } else {
+        console.log(`No data found for key '${key}'`);
+        resolve(null);
+      }
+    };
+
+    // Handle the error event of the get request
+    getRequest.onerror = (event) => {
+      console.log('Error retrieving timestamp:', event.target.error);
+      reject(event.target.error);
+    };
+  });
+}
