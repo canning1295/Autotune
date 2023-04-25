@@ -1,45 +1,61 @@
-var db
+import { options } from "../index.js";
 
-export async function initializeDB(options) {
-	// Check for IndexedDB support
-	if (!("indexedDB" in window)) {
-		alert(
-			"This browser does not support IndexedDB. Please use a modern browser like Chrome, Firefox, or Safari."
-		)
-		return
-	}
+let db;
 
-	const dbName = "Autotune"
-	const dbVersion = 1
+export const initializeDB = (() => {
+  let _promise;
+  return async () => {
+    if (!_promise) {
+      _promise = new Promise(async (resolve, reject) => {
+        console.log('Initializing DB')
+        // Check for IndexedDB support
+        if (!("indexedDB" in window)) {
+          alert(
+            "This browser does not support IndexedDB. Please use a modern browser like Chrome, Firefox, or Safari."
+          )
+          return
+        }
 
-	return new Promise((resolve, reject) => {
-		// Open or create the database
-		const request = indexedDB.open(dbName, dbVersion)
+        const dbName = `Autotune_${options.user}`
+        const dbVersion = 1
 
-		request.onupgradeneeded = (event) => {
-			const db = event.target.result
+        // Open or create the database
+        const request = indexedDB.open(dbName, dbVersion)
 
-			const objectStore = db.createObjectStore(options.user, {
-				keyPath: "key",
-			})
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result
+          console.log('options.userzzzzzzzzzzzzzzzzzzzzzzz: ', options.user)
 
-			console.log("Database upgrade is complete")
-		}
+          // Check if objectStore exists and create it if it doesn't
+          if (!db.objectStoreNames.contains('BGs')) {
+            const objectStore = db.createObjectStore('BGs', {
+              keyPath: "key",
+            })
+          }
 
-		request.onsuccess = (event) => {
-			db = event.target.result
-			// console.log("Database opened successfully:", db)
-			resolve(db)
-		}
+          console.log("Database upgrade is complete")
+        }
 
-		request.onerror = (event) => {
-			console.log("Error opening database:", event.target.errorCode)
-			reject(event.target.error)
-		}
-	})
-}
+        request.onsuccess = (event) => {
+          db = event.target.result;
+          console.log("Database opened successfully:", db)
+          resolve(db);
+        }
+
+        request.onerror = (event) => {
+          console.log("Error opening database:", event.target.errorCode)
+          reject(event.target.error)
+        }
+      });
+    }
+    return _promise;
+  };
+})();
 
 export async function saveData(objectStoreName, key, value, timestamp) {
+	// await initializeDB(); // Ensure the database is initialized
+	console.log('objectStoreName: ', objectStoreName, 'key: ', key, 'value: ', value, 'timestamp: ', timestamp)
+
 	// Get the data type of the variable
 	let dataType = typeof value
 
@@ -65,6 +81,7 @@ export async function saveData(objectStoreName, key, value, timestamp) {
 
 	return new Promise((resolve, reject) => {
 		// Create a transaction with readwrite mode
+		console.log('objectStoreName', objectStoreName)
 		const transaction = db.transaction([objectStoreName], "readwrite")
 
 		// Get the object store
@@ -75,16 +92,17 @@ export async function saveData(objectStoreName, key, value, timestamp) {
 
 		// Handle the success event of the put request
 		putRequest.onsuccess = (event) => {
+			console.log("Data saved successfully")
 			resolve(event.target.result)
 		}
 
 		// Handle the error event of the put request
 		putRequest.onerror = (event) => {
-			console.log(
-				"Error saving data to the database:",
-				event.target.error
-			)
-			reject(event.target.error)
+		console.log(
+			"Error saving data to the database:",
+			event.target.error
+		)
+		reject(event.target.error)
 		}
 	})
 }
@@ -137,6 +155,15 @@ export async function getData(objectStoreName, key) {
 			reject(event.target.error)
 		}
 	})
+}
+
+export async function closeDB() {
+	if (db) {
+		db.close()
+		console.log("Database connection closed")
+	} else {
+		console.log("No database connection to close")
+	}
 }
 
 export async function getTimestamp(objectStoreName, key) {

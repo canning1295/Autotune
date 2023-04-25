@@ -1,39 +1,16 @@
-// import { initializeDB, saveData, getData } from '../localDatabase.js'
-import { setUser } from '../load.js';
-import { options } from '../index.js';
+import { setCurrentUser } from '../load.js';
+import { loadNavMenu } from './navMenu.js';
 
-// // let users = [];
-// // export async function getUsersArray() {
-// //     try {
-// //       const userListKey = "user-list";
-// //       const objectStoreName = "Autotune";
-  
-// //       // Try to get the "user-list" from the local storage
-// //       const userListData = await getData(objectStoreName, userListKey);
-  
-// //       // If the "user-list" exists in the local storage and is not empty, set users to userListData
-// //       if (userListData !== null && Array.isArray(userListData) && userListData.length > 0) {
-// //         const users = userListData;
-// //         return users;
-// //       } else {users = []}
-// //     } catch (error) {
-// //       console.log("Error getting users array:", error);
-// //     }   
-// // }
-  
 export function loadSettings() {
-    console.log('Loading settings')
-    // JavaScript code to insert HTML into the "main" div
-    var htmlCode = /*html*/
-    `
+  console.log('Loading settings')
+  var htmlCode = /*html*/
+  `
         <div class="container mt-4">
             <h1>Settings</h1>
             <!-- Add drop-down menu for selecting Current User -->
             <div class="mb-3">
                 <label for="current-user-select" class="form-label">Current User</label>
-                <select class="form-select" id="current-user-select">
-                    <option selected>Select a user...</option>
-                </select>
+                <span class="form-control" id="current-user-select">Add or select user below...</span>
                 <button id="add-user" type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#userModal">Add user</button>
                 <div>
                     <table id="userTable" class="table table-striped">
@@ -51,8 +28,7 @@ export function loadSettings() {
                 </div>
             </div>
         </div>
-  
-    
+
         <!-- User Modal -->
         <div class="modal fade" id="userModal" tabindex="-1">
             <div class="modal-dialog">
@@ -80,57 +56,93 @@ export function loadSettings() {
                                 <input type="number" class="form-control" id="icr" required>
                             </div>
                             <div class="mb-3">
-                                <label for="weight" class="form-label">Weight</label>
-                                <input type="number" class="form-control" id="weight" required>
-                            </div>
+                            <label for="weight" class="form-label">Weight</label>
+                            <input type="number" class="form-control" id="weight" required>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
     `
     document.getElementById('main').innerHTML = htmlCode;
- 
-    // Initialize variables
+
     let users = JSON.parse(localStorage.getItem('autotune_users')) || [];
-    const currentUserSelect = document.getElementById('current-user-select')
-    let currentUser = JSON.parse(localStorage.getItem('autotune_currentUser')) || [];
-    currentUserSelect.value = currentUser
 
     $(document).ready(function() {
-        // if (!$.fn.DataTable.isDataTable('#userTable')) {
-            console.log('Initializing DataTables.js (Responsive extension)...')
-        $('#userTable').DataTable({
-            // responsive: true,
-            searching: false,      // Hide the search box
-            lengthChange: false,   // Hide the "Show X entries" drop-down
-            ordering: false,       // Disable column ordering
-            columnDefs: [
-                { targets: 0, visible: true },
-                { targets: 1, visible: false },
-                { targets: 2, visible: false },
-                { targets: 3, visible: false },
-                { targets: 4, visible: false }
-            ],          
-        });
-        // }
-        // Populate table with users
-            if (users.length > 0) {
-                populateTable(users);
-            }
+    console.log('Initializing DataTables.js (Responsive extension)...')
+    $('#userTable').DataTable({
+        searching: false,
+        lengthChange: false,
+        ordering: "asc",
+        columnDefs: [
+            { targets: 0, visible: true },
+            { targets: 1, visible: false },
+            { targets: 2, visible: false },
+            { targets: 3, visible: false },
+            { targets: 4, visible: false }
+        ],
+        columns: [
+            { title: "Select user" }, // specify the title property for the first column
+            null, // leave the title property for the remaining columns null
+            null,
+            null,
+            null
+        ]
+    });
+    
+
+    if (users.length > 0) {
+        populateTable(users);
+    }
     });
 
-    // Get the form and modal elements
+    let currentUser = JSON.parse(localStorage.getItem('autotune_currentUser')) || [];
+
+    $('#userTable tbody').on('click', 'tr', function (event) {
+        if ($(event.target).hasClass('details-control')) {
+            return;
+        } else {
+            let tableData = [];
+            $(this).children('td').each(function () {
+                tableData.push($(this).text());
+            });
+
+            let usersList = localStorage.getItem('autotune_users');
+            let users = usersList ? JSON.parse(usersList) : [];
+            
+            let username = tableData[0];
+            let currentUser = users.find(user => user.username === username);
+            localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
+            
+            if (currentUser) {
+                tableData[1] = currentUser.url;
+                tableData[2] = currentUser.isf;
+                tableData[3] = currentUser.icr;
+                tableData[4] = currentUser.weight;
+            } else {
+                console.log('User not found');
+            }
+
+            // Save the current user to local storage
+            document.getElementById('username').value = currentUser.username;
+            document.getElementById('url').value = currentUser.url;
+            document.getElementById('isf').value = currentUser.isf;
+            document.getElementById('icr').value = currentUser.icr;
+            document.getElementById('weight').value = currentUser.weight;
+            document.getElementById('deleteBtn').style.display = 'block';
+            // localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
+            userModal.show();
+        }
+    });
+
     const userForm = document.getElementById('userForm');
     const userModal = new bootstrap.Modal(document.getElementById('userModal'));
-    populateCurrentUserSelect(users, currentUser);
 
-    // Save button click event
     userForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const username = document.getElementById('username').value;
@@ -138,98 +150,41 @@ export function loadSettings() {
         const isf = document.getElementById('isf').value;
         const icr = document.getElementById('icr').value;
         const weight = document.getElementById('weight').value;
-
-        if (currentUser) {
-            // This creates a new array of user, but without the user, which will be added next
-            users = users.filter((user) => user.username !== username);
-        }
+        users = users.filter((user) => user.username !== username);
 
         users.push({ username, url, isf, icr, weight });
         localStorage.setItem('autotune_users', JSON.stringify(users));
+        let currentUser = { username, url, isf, icr, weight}
+        // console.log('currentUser:', currentUser)
+        setCurrentUser(currentUser);
+        //   localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
+        document.getElementById('current-user-select').innerHTML = username;
         userModal.hide();
-        localStorage.setItem('autotune_currentUser', JSON.stringify({ username, url, isf, icr, weight })); // Save the current user to local storage
-        setUser()
-        console.log('Current user: ', currentUser)
-        populateCurrentUserSelect(users, currentUser);
-        populateTable(users)
+        populateTable(users);
+        loadNavMenu()
     });
 
-    // Add event listener to Delete button
     document.getElementById('deleteBtn').addEventListener('click', () => {
+        document.getElementById('current-user-select').innerHTML = 'Add or select user below...';
+        let currentUser = localStorage.getItem('autotune_currentUser');
+        currentUser = currentUser ? JSON.parse(currentUser) : [];
+        console.log('Deleting user account:', currentUser.username)
         users = users.filter((user) => user.username !== currentUser.username);
         localStorage.setItem('autotune_users', JSON.stringify(users));
-        const currentUserSelect = document.getElementById('current-user-select');
-        currentUserSelect.value = "";
-        localStorage.setItem('autotune_currentUser', JSON.stringify({})); // Save the current user to local storage
-        setUser()
         userModal.hide();
-        populateTable(users)
-        currentUser = "";
+        populateTable(users);
+        currentUser = null;
+        setCurrentUser(currentUser);
     });
 
-    // Function to populate the DataTable with users
     function populateTable(users) {
-        const dataTable = $('#userTable').DataTable(); // Remove the {retrieve: true} option
-        dataTable.clear().rows.add(users.map(user => [
-            user.username,
-            user.url,
-            user.isf,
-            user.icr,
-            user.weight
-        ])).draw();
+    const dataTable = $('#userTable').DataTable();
+    dataTable.clear().rows.add(users.map(user => [
+        user.username,
+        user.url,
+        user.isf,
+        user.icr,
+        user.weight
+    ])).draw();
     };
-    
-
-    // Add event listener for row click
-    $('#userTable tbody').on('click', 'tr', function (event) {
-        if ($(event.target).hasClass('details-control')) {
-            return;
-            } else {
-            let tableData = [];
-            $(this).children('td').each(function () {
-                tableData.push($(this).text());
-            });
-
-            currentUser = {
-                username: tableData[0],
-            };
-            for (let i = 0; i < users.length; i++) {
-                if (users[i].username === currentUser.username) {
-                currentUser.url = users[i].url;
-                currentUser.isf = users[i].isf;
-                currentUser.icr = users[i].icr;
-                currentUser.weight = users[i].weight;
-                break;
-                }
-            }
-            localStorage.setItem('autotune_currentUser', JSON.stringify({ currentUser })); // Save the current user to local storage
-            document.getElementById('username').value = currentUser.username;
-            document.getElementById('url').value = currentUser.url;
-            document.getElementById('isf').value = currentUser.isf;
-            document.getElementById('icr').value = currentUser.icr;
-            document.getElementById('weight').value = currentUser.weight;
-            document.getElementById('deleteBtn').style.display = 'block';
-        
-            userModal.show();
-        }
-    });
-    
-    // Add event listener for modal hide
-    userModal._element.addEventListener('hide.bs.modal', () => {
-        // currentUser = null;
-        userForm.reset();
-        document.getElementById('deleteBtn').style.display = 'none';
-    });
-    
-    
-    // Function to populate the Current User drop-down menu
-    function populateCurrentUserSelect(users, currentUser) {
-        const currentUserSelect = document.getElementById('current-user-select');
-        const options = ['<option>Select a user...</option>'].concat(users.map(user =>
-        `<option value="${user.username}"${currentUser && currentUser.username === user.username ? ' selected' : ''}>${user.username}</option>`
-        ));
-        currentUserSelect.innerHTML = options.join('');
-        localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser)); // Save the current user to local storage
-        setUser() // Set the user in the Autotune app
-    }
-}
+};

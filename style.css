@@ -41,7 +41,9 @@ BEGIN CSS FOR SETTINGS
     margin-top: 20px;
 }
 
-
+#userTable thead th {
+  text-align: center;
+}
 /* 
 BEGIN CSS FOR FOOTER/MENU
 */

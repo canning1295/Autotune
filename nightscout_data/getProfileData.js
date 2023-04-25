@@ -61,7 +61,7 @@ export async function setProfiles(profileData, options) {
 	// create a variable named timestamp and set it to yesterday's date in YYYY-MM-DD format
 	const timestamp = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split("T")[0]
 	console.log('profiles presave', profiles)
-	await saveData(options.user, key, profiles, timestamp) // Save the profiles to IndexedDB
+	await saveData('Profiles', key, profiles, timestamp) // Save the profiles to IndexedDB
 }
 
 function getSize(obj) {

@@ -1,4 +1,4 @@
-import { safetyMessage, setUser } from "./load.js";
+import { safetyMessage, setCurrentUser } from "./load.js";
 import { loadSettings } from "./views/settings.js";
 
 export const options = {

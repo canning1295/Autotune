@@ -1,6 +1,7 @@
-import { getData } from "../localDatabase.js";
-import { options } from "../index.js";
+// import { getData } from "../localDatabase.js";
+// import { options } from "../index.js";
 import { getBGs } from "../nightscout_data/getBgData.js";
+import { getData } from "../localDatabase.js";  
 
 export function loadBasal() {
     console.log("Loading basal tuner");
@@ -70,17 +71,17 @@ export function loadBasal() {
 
         // Add selected date to array and display it on the page
         $("#datepicker").on("changeDate", function () {
-        var selectedDate = $("#datepicker").datepicker("getDate");
-        (async () => {
-            if (selectedDates.includes(selectedDate)) {
-                // Remove date from array if already selected
-                selectedDates.splice(selectedDates.indexOf(selectedDate), 1);
-            } else {
-                // Add date to array if not already selected
-                selectedDates.push(selectedDate);
-            }
-            await updateChart(selectedDate);
-        })();
+            var selectedDate = $("#datepicker").datepicker("getDate");
+            (async () => {
+                if (selectedDates.includes(selectedDate)) {
+                    // Remove date from array if already selected
+                    selectedDates.splice(selectedDates.indexOf(selectedDate), 1);
+                } else {
+                    // Add date to array if not already selected
+                    selectedDates.push(selectedDate);
+                }
+                await updateChart(selectedDate);
+            })();
         });
         const selectDatesButton = document.getElementById("selectDatesButton");
         const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
@@ -93,72 +94,75 @@ export function loadBasal() {
 
     async function updateChart(date) {
         // Format date as a string YYYY-MM-DD
-        date = date.toISOString().slice(0, 10);
-        let key = `bg_${date}`;
-        let bgData = await getBGs(date);
-        if (!Array.isArray(bgData)) {
-          //run the code to retrieve the data from NS
-          
+        let key = date.toISOString().slice(0, 10);
+        let objectStoreName = 'BGs';
+    
+        // First try to get the data from the local database
+        let bgData = await getData(objectStoreName, key);
+        console.log('local bgData: ', bgData);
+    
+        // If the data is not in the local database, fetch it from the remote location
+        if (bgData === null) {
+            bgData = await getBGs(date);
+            console.log('remote bgData: ', bgData);
         }
-      
-        // Get the canvas element and destroy existing chart if it exists
-        var canvas = document.getElementById("myChart");
-        if (canvas.chart) {
-          canvas.chart.destroy();
-        }
-      
-        // Create an array of labels representing the hours and minutes of each interval
-        var labels = [];
-        for (var i = 0; i < 24; i++) {
-          for (var j = 0; j < 60; j += 5) {
-            var hour = i.toString().padStart(2, '0');
-            var minute = j.toString().padStart(2, '0');
-            labels.push(`${hour}:${minute}`);
-          }
-        }
-      
-        // Create a new chart with the retrieved bg data and labels
-        var ctx = canvas.getContext("2d");
-        var myChart = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: "BG values",
-                data: bgData,
-                borderColor: "rgba(255, 99, 132, 1)",
-                backgroundColor: "rgba(255, 99, 132, 0.2)",
-              },
-            ],
-          },
-          options: {
-            scales: {
-              yAxes: [
-                {
-                  ticks: {
-                    beginAtZero: true,
-                  },
+    
+        // Make sure we have the data before proceeding
+        if (bgData) {
+            // Extract the 'bg' values and corresponding times from the bgData array
+            let chartData = bgData.map(entry => entry.bg);
+            let chartLabels = bgData.map(entry => new Date(entry.time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+    
+            // Get the canvas element and destroy the existing chart if it exists
+            var canvas = document.getElementById("myChart");
+            if (canvas.chart) {
+                canvas.chart.destroy();
+            }
+    
+            // Create a new chart with the extracted data and labels
+            var ctx = canvas.getContext("2d");
+            var myChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: "BG values",
+                            data: chartData,
+                            borderColor: "rgba(255, 99, 132, 1)",
+                            backgroundColor: "rgba(255, 99, 132, 0.2)",
+                        },
+                    ],
                 },
-              ],
-            },
-            elements: {
-              point: {
-                radius: 0,
-                hoverRadius: 0,
-              },
-            },
-          },
-        });
-        canvas.chart = myChart;
-      }
-      
-      
+                options: {
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true,
+                                },
+                            },
+                        ],
+                    },
+                    elements: {
+                        point: {
+                            radius: 0,
+                            hoverRadius: 0,
+                        },
+                    },
+                },
+            });
+            canvas.chart = myChart;
+        } else {
+            console.error('No data found for the specified date');
+        }
+    }
+       
 }
 
 async function getBgDataForSelectedDate(selectedDate) {
     const databaseName = 'Autotune';
-    const objectStoreName = options.user;
+    const objectStoreName = 'BGs'
     const key = selectedDate;
     const request = indexedDB.open(databaseName);
   
