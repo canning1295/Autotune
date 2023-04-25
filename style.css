@@ -17,6 +17,23 @@ BEGIN CSS FOR BASAL
     background-color: #007bff;
     color: #fff;
   }
+  /* Adjust the size of the datepicker container */
+.datepicker {
+    width: 75%;
+    margin: 0 auto; /* Center the datepicker */
+  }
+  
+  /* Adjust the size of the calendar table */
+  .datepicker table {
+    width: 100%;
+  }
+  
+  /* Add borders around the date cells */
+  .datepicker-days td.day {
+    border: 1px solid #ccc;
+    padding: 8px; /* Increase padding to make dates bigger */
+  }
+  
 /* 
 BEGIN CSS FOR SETTINGS
 */
@@ -56,3 +73,10 @@ BEGIN CSS FOR FOOTER/MENU
     width: 25px;
     height: 25px;
   }
+  /* .form-select {
+    width: 100% !important;
+    min-width: 150px !important;
+    font-size: 16px !important;
+    padding: 0.5rem 1rem !important;
+    height: auto !important;
+  } */

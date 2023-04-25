@@ -1,22 +1,25 @@
-import { initializeDB, saveData, getData } from '../localDatabase.js'
-let users = [];
-export async function getUsersArray() {
-    try {
-      const userListKey = "user-list";
-      const objectStoreName = "Autotune";
+// import { initializeDB, saveData, getData } from '../localDatabase.js'
+import { setUser } from '../load.js';
+import { options } from '../index.js';
+
+// let users = [];
+// export async function getUsersArray() {
+//     try {
+//       const userListKey = "user-list";
+//       const objectStoreName = "Autotune";
   
-      // Try to get the "user-list" from the local storage
-      const userListData = await getData(objectStoreName, userListKey);
+//       // Try to get the "user-list" from the local storage
+//       const userListData = await getData(objectStoreName, userListKey);
   
-      // If the "user-list" exists in the local storage and is not empty, set users to userListData
-      if (userListData !== null && Array.isArray(userListData) && userListData.length > 0) {
-        const users = userListData;
-        return users;
-      } else {users = []}
-    } catch (error) {
-      console.log("Error getting users array:", error);
-    }   
-}
+//       // If the "user-list" exists in the local storage and is not empty, set users to userListData
+//       if (userListData !== null && Array.isArray(userListData) && userListData.length > 0) {
+//         const users = userListData;
+//         return users;
+//       } else {users = []}
+//     } catch (error) {
+//       console.log("Error getting users array:", error);
+//     }   
+// }
   
 export function loadSettings() {
     console.log('Loading settings')
@@ -95,9 +98,10 @@ export function loadSettings() {
  
 // Initialize variables
 let users = JSON.parse(localStorage.getItem('autotune_users')) || [];
-let currentUser = null;
+const currentUserSelect = document.getElementById('current-user-select')
+let currentUser = JSON.parse(localStorage.getItem('autotune_currentUser')) || [];
+currentUserSelect.value = currentUser
 
-// Initialize DataTables.js with Responsive extension
 $(document).ready(function() {
     // if (!$.fn.DataTable.isDataTable('#userTable')) {
         console.log('Initializing DataTables.js (Responsive extension)...')
@@ -231,14 +235,16 @@ $('#userTable tbody').on('click', 'tr', function (event) {
   
     // Add event listener to save selected value to local storage
     currentUserSelect.addEventListener('change', function() {
-      console.log('current user saved to local storage: ', this.value)
-      const selectedUsername = this.value;
-      const selectedUser = users.find(user => user.username === selectedUsername) || null;
-      localStorage.setItem('autotune_currentUser', JSON.stringify(selectedUser));
+        console.log('current user saved to local storage: ', this.value)
+        const selectedUsername = this.value;
+        const selectedUser = users.find(user => user.username === selectedUsername) || null;
+        setUser()
     });
   }
 }
 
-
-
-
+function setCurrentUserDropDown() {
+    const currentUserSelect = document.getElementById('autotune_currentUser').value;
+    const currentUser = JSON.parse(localStorage.getItem('')) || [];
+    currentUserSelect = currentUser
+}
