@@ -1,4 +1,6 @@
 import { options } from "./index.js";
+import { initializeDB } from "./localDatabase.js";
+import { loadNavMenu } from "./views/navMenu.js";
 
 export function safetyMessage() {
 
@@ -63,12 +65,16 @@ export function safetyMessage() {
 
 export function setUser() {
 	const currentUser = JSON.parse(localStorage.getItem('autotune_currentUser'));
-	if (currentUser) {
-		options.user = currentUser.username;
-		options.url = currentUser.url;
-		options.isf = currentUser.isf;
-		options.icr = currentUser.icr;
-		options.weight = currentUser.weight;
+    if (currentUser) {
+      options.user = currentUser.username;
+      options.url = currentUser.url;
+      options.isf = currentUser.isf;
+      options.icr = currentUser.icr;
+      options.weight = currentUser.weight;
+      if (currentUser.length > 0) {
+        initializeDB()
+        loadNavMenu()
+      }
 	}
 
 }

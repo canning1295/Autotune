@@ -2,21 +2,26 @@ import { loadSettings } from "./settings.js";
 import { loadBasal } from "./basal.js";
 
 
-export function loadMenu() {
+export function loadNavMenu() {
+    
     function settings() {
-        console.log('Loading settings')
         let autotuneView = localStorage.getItem("autotuneView");
-        if (autotuneView !== "settings") {
-            loadSettings();
-            localStorage.setItem("autotuneView", "settings");
+        if (localStorage.getItem("autotune_currentUser").length > 0) {
+            if (autotuneView !== "settings" && autotuneView !== "settings") {
+                console.log('Loading settings')
+                loadSettings();
+                localStorage.setItem("autotuneView", "settings");
+            }
         }
     }
     function basal() {
-        console.log('Loading basal')
         let autotuneView = localStorage.getItem("autotuneView");
-        if (autotuneView !== "basal") {
-            loadBasal();
-            localStorage.setItem("autotuneView", "basal");
+        if (localStorage.getItem("autotune_currentUser").length > 0 && autotuneView !== "basal") {
+            if (autotuneView !== "basal") {
+                console.log('Loading basal')
+                loadBasal();
+                localStorage.setItem("autotuneView", "basal");
+            }
         }
     }
     // JavaScript code to insert HTML into the "main" div

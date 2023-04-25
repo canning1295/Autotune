@@ -19,8 +19,6 @@ export async function initializeDB(options) {
 		request.onupgradeneeded = (event) => {
 			const db = event.target.result
 
-			// Create the object store(s) and index(es) you need
-			// Example: Creating an object store named 'settings'
 			const objectStore = db.createObjectStore(options.user, {
 				keyPath: "key",
 			})

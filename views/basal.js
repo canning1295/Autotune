@@ -3,7 +3,7 @@ import { options } from "../index.js";
 import { getBGs } from "../nightscout_data/getBgData.js";
 
 export function loadBasal() {
-    console.log("Loading settings");
+    console.log("Loading basal tuner");
 
     // JavaScript code to insert HTML into the "main" div
     var htmlCode =
