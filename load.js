@@ -65,8 +65,6 @@ export function safetyMessage() {
 
 export function setCurrentUser(userArray) {
     localStorage.setItem('autotune_currentUser', JSON.stringify(userArray));
-    let test = localStorage.getItem('autotune_currentUser');
-    console.log('test', test)
     const currentUser = userArray;
     if (currentUser) {
         options.user = currentUser.username;

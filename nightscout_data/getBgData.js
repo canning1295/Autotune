@@ -61,8 +61,8 @@ console.log('nextDateStringUTC',nextDateStringUTC); // Outputs "2023-04-26T06:00
 			
 		} else {
 			console.log("BGs already exist for " + currentDate)
-			const databaseName = 'Autotune';
-			const objectStoreName = options.user;
+			const databaseName = `Autotune_${options.user}`;
+			const objectStoreName = 'BGs';
 			const key = currentDate
 			const request = indexedDB.open(databaseName);
 			console.log('options', options)
@@ -216,7 +216,7 @@ async function adjustFirstEntry(bgArray, user) {
   function checkDataExists(objectStoreName, key) {
 	key = key;
 	console.log('key: ', key);
-	const databaseName = 'Autotune';
+	const databaseName = `Autotune_${options.user}`;
 	const request = indexedDB.open(databaseName);
 	console.log('objectStoreName: ', objectStoreName);
 	return new Promise((resolve, reject) => {

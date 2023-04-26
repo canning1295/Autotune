@@ -1,5 +1,3 @@
-// import { getData } from "../localDatabase.js";
-// import { options } from "../index.js";
 import { getBGs } from "../nightscout_data/getBgData.js";
 import { getData } from "../localDatabase.js";  
 
@@ -45,6 +43,7 @@ export function loadBasal() {
         `;
     document.getElementById("main").innerHTML = htmlCode;
 
+    var selectedDates = [];
     $(document).ready(function () {
         // Initialize datepicker
         $("#datepicker").datepicker({
@@ -55,34 +54,43 @@ export function loadBasal() {
         container: "#datepicker",
         keyboardNavigation: false,
         beforeShowDay: function (date) {
-            // Check if date is in selectedDates array
-            var selectedDates = $("#datepicker").datepicker("getDates");
             for (var i = 0; i < selectedDates.length; i++) {
-            if (date.getTime() === selectedDates[i].getTime()) {
-                return { classes: "selected-date" }; // add selected-date class to selected dates
-            }
+                // Check if date is in the selectedDates array
+                if (date.getTime() === selectedDates[i].getTime()) {
+                    return { classes: "selected-date" }; // add selected-date class to selected dates
+                }
             }
             return; // otherwise, do not modify appearance
         },
+        
         });
 
-        // Initialize selectedDates array
-        var selectedDates = [];
-
         // Add selected date to array and display it on the page
-        $("#datepicker").on("changeDate", function () {
-            var selectedDate = $("#datepicker").datepicker("getDate");
+        $("#datepicker").on("changeDate", function (e) {
+            var selectedDate = e.date;
+        
+            // Find the day element for the selected date based on its data-date, data-month, and data-year attributes
+            const dayElement = $("#datepicker")
+                .find(`td.day[data-date="${selectedDate.getDate()}"][data-month="${selectedDate.getMonth()}"][data-year="${selectedDate.getFullYear()}"]`)
+                .first();
+        
             (async () => {
-                if (selectedDates.includes(selectedDate)) {
-                    // Remove date from array if already selected
-                    selectedDates.splice(selectedDates.indexOf(selectedDate), 1);
+                if (selectedDates.some(date => date.getTime() === selectedDate.getTime())) {
+                    // Remove date from array and its styling if already selected
+                    selectedDates = selectedDates.filter(date => date.getTime() !== selectedDate.getTime());
+                    dayElement.removeClass("selected-date");
                 } else {
-                    // Add date to array if not already selected
+                    // Add date to array and apply styling if not already selected
                     selectedDates.push(selectedDate);
+                    dayElement.addClass("selected-date");
                 }
                 await updateChart(selectedDate);
             })();
         });
+        
+        
+        
+        
         const selectDatesButton = document.getElementById("selectDatesButton");
         const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
 
@@ -160,36 +168,36 @@ export function loadBasal() {
        
 }
 
-async function getBgDataForSelectedDate(selectedDate) {
-    const databaseName = 'Autotune';
-    const objectStoreName = 'BGs'
-    const key = selectedDate;
-    const request = indexedDB.open(databaseName);
+// async function getBgDataForSelectedDate(selectedDate) {
+//     const databaseName = `Autotune_${options.user}`;
+//     const objectStoreName = 'BGs'
+//     const key = selectedDate;
+//     const request = indexedDB.open(databaseName);
   
-    return new Promise((resolve, reject) => {
-      request.onsuccess = () => {
-        const db = request.result;
-        const transaction = db.transaction([objectStoreName], 'readonly');
-        const objectStore = transaction.objectStore(objectStoreName);
-        const getRequest = objectStore.get(key);
+//     return new Promise((resolve, reject) => {
+//       request.onsuccess = () => {
+//         const db = request.result;
+//         const transaction = db.transaction([objectStoreName], 'readonly');
+//         const objectStore = transaction.objectStore(objectStoreName);
+//         const getRequest = objectStore.get(key);
   
-        getRequest.onerror = () => {
-          reject(new Error('Failed to get data from object store'));
-        };
+//         getRequest.onerror = () => {
+//           reject(new Error('Failed to get data from object store'));
+//         };
   
-        getRequest.onsuccess = () => {
-          let bgData = getRequest.result?.value;
-          console.log(typeof(bgData))
-          if (typeof bgData === 'string') {
-            bgData = JSON.parse(bgData).map(({ bg }) => parseFloat(bg));
-          }
-          resolve(bgData);
-        };
-      };
+//         getRequest.onsuccess = () => {
+//           let bgData = getRequest.result?.value;
+//           console.log(typeof(bgData))
+//           if (typeof bgData === 'string') {
+//             bgData = JSON.parse(bgData).map(({ bg }) => parseFloat(bg));
+//           }
+//           resolve(bgData);
+//         };
+//       };
   
-      request.onerror = () => {
-        reject(new Error('Failed to open database'));
-      };
-    });
-  }
+//       request.onerror = () => {
+//         reject(new Error('Failed to open database'));
+//       };
+//     });
+//   }
   
