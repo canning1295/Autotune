@@ -54,7 +54,7 @@ export const initializeDB = (() => {
 
 export async function saveData(objectStoreName, key, value, timestamp) {
 	// await initializeDB(); // Ensure the database is initialized
-	console.log('objectStoreName: ', objectStoreName, 'key: ', key, 'value: ', value, 'timestamp: ', timestamp)
+	// console.log('objectStoreName: ', objectStoreName, 'key: ', key, 'value: ', value, 'timestamp: ', timestamp)
 
 	// Get the data type of the variable
 	let dataType = typeof value
