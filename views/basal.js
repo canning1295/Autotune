@@ -69,27 +69,21 @@ export function loadBasal() {
         $("#datepicker").on("changeDate", function (e) {
             var selectedDate = e.date;
         
-            // Find the day element for the selected date based on its data-date, data-month, and data-year attributes
-            const dayElement = $("#datepicker")
-                .find(`td.day[data-date="${selectedDate.getDate()}"][data-month="${selectedDate.getMonth()}"][data-year="${selectedDate.getFullYear()}"]`)
-                .first();
+            if (selectedDates.some(date => date.getTime() === selectedDate.getTime())) {
+                // Remove date from array if already selected
+                selectedDates = selectedDates.filter(date => date.getTime() !== selectedDate.getTime());
+            } else {
+                // Add date to array if not already selected
+                selectedDates.push(selectedDate);
+            }
+            console.log('selectedDates: ', selectedDates);
         
-            (async () => {
-                if (selectedDates.some(date => date.getTime() === selectedDate.getTime())) {
-                    // Remove date from array and its styling if already selected
-                    selectedDates = selectedDates.filter(date => date.getTime() !== selectedDate.getTime());
-                    dayElement.removeClass("selected-date");
-                } else {
-                    // Add date to array and apply styling if not already selected
-                    selectedDates.push(selectedDate);
-                    dayElement.addClass("selected-date");
-                }
-                await updateChart(selectedDate);
-            })();
+            // Refresh the date picker to update the appearance of the selected dates
+            $("#datepicker").datepicker('update');
+        
+            // Call updateChart() function without awaiting its completion
+            updateChart(selectedDate);
         });
-        
-        
-        
         
         const selectDatesButton = document.getElementById("selectDatesButton");
         const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
@@ -135,7 +129,7 @@ export function loadBasal() {
                     labels: chartLabels,
                     datasets: [
                         {
-                            label: "BG values",
+                            label: `BGs for ${key}`,
                             data: chartData,
                             borderColor: "rgba(255, 99, 132, 1)",
                             backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -165,7 +159,15 @@ export function loadBasal() {
             console.error('No data found for the specified date');
         }
     }
-       
+    const selectDatesButton = document.getElementById("selectDatesButton");
+    const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
+    
+    // Show the modal automatically when the page loads
+    dateSelectionModal.show();
+    
+    selectDatesButton.addEventListener("click", () => {
+        dateSelectionModal.show();
+    });     
 }
 
 // async function getBgDataForSelectedDate(selectedDate) {

@@ -14,9 +14,10 @@ BEGIN CSS FOR MAIN
 BEGIN CSS FOR BASAL
 */
 .selected-date {
-    background-color: #007bff;
-    color: #fff;
-  }
+  background-color: #007bff !important;
+  color: white !important;
+}
+
   /* Adjust the size of the datepicker container */
 .datepicker {
     width: 75%;
