@@ -1,4 +1,4 @@
-import { saveData, getData } from "../localDatabase.js"
+import { saveData } from "../localDatabase.js"
 import { options } from "../index.js"
 
 let bgArray = []
@@ -61,13 +61,13 @@ export async function getBGs(currentDate) {
 			saveData('BGs', key, bgArray, currentDate);
 			
 		} else {
-			console.log("BGs already exist for " + currentDate)
+			// console.log("BGs already exist for " + currentDate)
 			const databaseName = `Autotune_${options.user}`;
 			const objectStoreName = 'BGs';
 			const key = currentDate
 			const request = indexedDB.open(databaseName);
-			console.log('options', options)
-			console.log('objectStoreName: ', objectStoreName, 'key: ', key, 'request: ', request)
+			// console.log('options', options)
+			// console.log('objectStoreName: ', objectStoreName, 'key: ', key, 'request: ', request)
 			  
 			return new Promise((resolve, reject) => {
 				request.onsuccess = () => {
@@ -94,7 +94,7 @@ export async function getBGs(currentDate) {
 				};
 			});
 		}
-		console.log("bgArray: ", bgArray)
+		// console.log("bgArray: ", bgArray)
 	return bgArray
 }
 
@@ -115,10 +115,10 @@ function roundToNearestFiveMinutes(date) {
 
 function checkDataExists(objectStoreName, key) {
 key = key;
-console.log('key: ', key);
+// console.log('key: ', key);
 const databaseName = `Autotune_${options.user}`;
 const request = indexedDB.open(databaseName);
-console.log('objectStoreName: ', objectStoreName);
+// console.log('objectStoreName: ', objectStoreName);
 return new Promise((resolve, reject) => {
 	request.onsuccess = () => {
 	const db = request.result;

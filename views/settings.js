@@ -34,8 +34,8 @@ export function loadSettings() {
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add User</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <h5 class="modal-title">Autotune User</h5>
+                        <!--<button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
                     </div>
                     <form id="userForm">
                         <div class="modal-body">
@@ -45,7 +45,7 @@ export function loadSettings() {
                             </div>
                             <div class="mb-3">
                                 <label for="url" class="form-label">URL</label>
-                                <input type="text" class="form-control" id="url" required>
+                                <input type="text" placeholder="https://yoursite.com" class="form-control" id="url" required>
                             </div>
                             <div class="mb-3">
                                 <label for="isf" class="form-label">ISF</label>
@@ -56,13 +56,14 @@ export function loadSettings() {
                                 <input type="number" class="form-control" id="icr" required>
                             </div>
                             <div class="mb-3">
-                            <label for="weight" class="form-label">Weight</label>
+                            <label for="weight" class="form-label">Weight in kg</label>
                             <input type="number" class="form-control" id="weight" required>
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <p>Click the save button to enable user access to Autotune.</p>
                         <button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!--<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
                         <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
                     </div>
                 </form>
@@ -74,31 +75,44 @@ export function loadSettings() {
     let users = JSON.parse(localStorage.getItem('autotune_users')) || [];
 
     $(document).ready(function() {
-    console.log('Initializing DataTables.js (Responsive extension)...')
-    $('#userTable').DataTable({
-        searching: false,
-        lengthChange: false,
-        ordering: "asc",
-        columnDefs: [
-            { targets: 0, visible: true },
-            { targets: 1, visible: false },
-            { targets: 2, visible: false },
-            { targets: 3, visible: false },
-            { targets: 4, visible: false }
-        ],
-        columns: [
-            { title: "Select user" }, // specify the title property for the first column
-            null, // leave the title property for the remaining columns null
-            null,
-            null,
-            null
-        ]
-    });
-    
+        console.log('Initializing DataTables.js (Responsive extension)...')
+        $('#userTable').DataTable({
+            searching: false,
+            lengthChange: false,
+            ordering: "asc",
+            columnDefs: [
+                { targets: 0, visible: true },
+                { targets: 1, visible: false },
+                { targets: 2, visible: false },
+                { targets: 3, visible: false },
+                { targets: 4, visible: false }
+            ],
+            columns: [
+                { title: "Select user" }, // specify the title property for the first column
+                null, // leave the title property for the remaining columns null
+                null,
+                null,
+                null
+            ]
+        });
+        
+        if (users.length > 0) {
+            populateTable(users);
+        }
 
-    if (users.length > 0) {
-        populateTable(users);
-    }
+        document.getElementById('add-user').addEventListener('click', () => {
+            clearUserForm();
+        });
+
+        function clearUserForm() {
+            document.getElementById('username').value = '';
+            document.getElementById('url').value = '';
+            document.getElementById('isf').value = '';
+            document.getElementById('icr').value = '';
+            document.getElementById('weight').value = '';
+            document.getElementById('deleteBtn').style.display = 'none';
+        }        
+    
     });
 
     let currentUser = JSON.parse(localStorage.getItem('autotune_currentUser')) || [];

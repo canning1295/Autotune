@@ -18,7 +18,6 @@ export function loadNavMenu() {
         let autotuneView = localStorage.getItem("autotuneView");
         if (localStorage.getItem("autotune_currentUser").length > 0 && autotuneView !== "basal") {
             if (autotuneView !== "basal") {
-                console.log('Loading basal')
                 loadBasal();
                 localStorage.setItem("autotuneView", "basal");
             }

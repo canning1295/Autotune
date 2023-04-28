@@ -17,6 +17,7 @@ export const initializeDB = (() => {
         }
 
         const dbName = `Autotune_${options.user}`
+		// If you add any more objectStores, you need to increment the version number
         const dbVersion = 1
 
         // Open or create the database
@@ -24,11 +25,25 @@ export const initializeDB = (() => {
 
         request.onupgradeneeded = (event) => {
           const db = event.target.result
-          console.log('options.userzzzzzzzzzzzzzzzzzzzzzzz: ', options.user)
 
-          // Check if objectStore exists and create it if it doesn't
+          // Check if objectStores exist and create if it doesn't
           if (!db.objectStoreNames.contains('BGs')) {
             const objectStore = db.createObjectStore('BGs', {
+              keyPath: "key",
+            })
+          }
+          if (!db.objectStoreNames.contains('Profiles')) {
+            const objectStore = db.createObjectStore('Profiles', {
+              keyPath: "key",
+            })
+          }
+          if (!db.objectStoreNames.contains('Basal_Rates')) {
+            const objectStore = db.createObjectStore('Basal_Rates', {
+              keyPath: "key",
+            })
+          }
+          if (!db.objectStoreNames.contains('Combined_Data')) {
+            const objectStore = db.createObjectStore('Combined_Data', {
               keyPath: "key",
             })
           }
