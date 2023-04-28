@@ -1,8 +1,8 @@
 import { getBGs } from "../nightscout_data/getBgData.js";
 import { getData, saveData } from "../localDatabase.js";  
-import { averageBGs } from "../calculations/averageBGs.js";
 import { getUserProfiles } from "../nightscout_data/getProfileData.js";
 import { getTempBasalData } from "../nightscout_data/getTempBasalData.js";
+import { getInsulinDelivered } from "../calculations/checks.js";
 
 export function loadBasal() {
     // JavaScript code to insert HTML into the "main" div
@@ -105,7 +105,7 @@ export function loadBasal() {
         });
 
         async function run(selectedDates, selectedDate) {
-            let profiles = await getUserProfiles();
+
             let date = new Date(selectedDate);
           
             function getValueForTime(array, timeAsSeconds) {
@@ -123,11 +123,12 @@ export function loadBasal() {
             for (let i = 0; i < selectedDates.length; i++) {
               let selectedDate = selectedDates[i].toISOString().slice(0, 10);
               let bgData = await getData("BGs", selectedDate);
+              console.log('bgData: ', bgData)
               date.setHours(0, 0, 0, 0);
               let deliveredBasals = await getTempBasalData(selectedDate);
           
               let combinedData = [];
-          
+              let profiles = await getUserProfiles();
               for (let i = 0; i < 288; i++) {
                     // Check if the combined data for the current date already exists in the "Combined_Data" store
                 let existingData = await getData("Combined_Data", selectedDate);
@@ -136,18 +137,20 @@ export function loadBasal() {
                     continue;
                 }
                 let bg;
+                let time;
                 if (new Date(bgData[i].time) > date) {
                   let prevDate = new Date(selectedDate);
                   prevDate.setDate(prevDate.getDate() - 1);
                   let prevBGs = await getBGs(prevDate);
                   bg = prevBGs[prevBGs.length - 1].bg;
                 }
+
                 bg = bgData[i].bg;
-                let time = date;
+                time = new Date(bgData[i].time);
                 let profile = profiles.find(
                     (profile) =>
-                        new Date(profile.startDate) <= new Date(time) &&
-                        new Date(profile.endDate) >= new Date(time)
+                        new Date(profile.startDate) <= time &&
+                        new Date(profile.endDate) >= time
                 );
                 if (!profile)
                   alert(
@@ -189,12 +192,13 @@ export function loadBasal() {
           
                 // Add 5 minutes to date
                 date = new Date(date.getTime() + 5 * 60000);
+                console.log('combinedData: ', combinedData)
               }
           
               // Save the combined data for the current date
               let key = selectedDates[i].toISOString().slice(0, 10);
               let timestamp = new Date().toISOString();
-              await saveData("Combined_Data", key, combinedData, timestamp);
+              saveData("Combined_Data", key, combinedData, timestamp)
             }
             let averageCombinedData = await getAverageCombinedData(selectedDates);
         }          
@@ -260,7 +264,6 @@ export function loadBasal() {
                 lowTarget: avgLowTarget,
               });
             }
-            console.log('averageCombinedData: ', averageCombinedData)
             return averageCombinedData;
           }
           
@@ -343,3 +346,13 @@ export function loadBasal() {
         dateSelectionModal.show();
     });     
 }
+
+// This JavaScript code is part of a web application that helps users adjust their basal rates (continuous infusion of insulin) based on their blood glucose data. The code provides the following functionalities:
+
+// 1. It imports required functions from other modules.
+// 2. It defines a `loadBasal()` function that inserts HTML code into the main div to display various elements like a button to select dates, a modal with a datepicker to select dates for basal rate adjustment, and a line chart to visualize blood glucose data for the selected date.
+// 3. The `loadBasal()` function sets up event listeners for the datepicker, the "Select Dates" button, and the "Run" button in the modal. The event listeners handle the selection of dates, display of the modal, and fetching of blood glucose data and user profiles to calculate basal rate adjustments based on the selected dates, respectively.
+// 4. The `loadBasal()` function also includes the `getAverageCombinedData()` function that calculates average combined data (including blood glucose levels, basal rates, and other insulin therapy parameters) for the selected dates.
+// 5. The `updateChart()` function is defined outside the `loadBasal()` function, and it is responsible for fetching blood glucose data for the selected date, either from the local database or remotely, and then updating the line chart with this data.
+
+// When the web application is loaded, the date selection modal is automatically displayed, and users can select dates for which they want to adjust their basal rates. The line chart is updated with blood glucose data for the selected date, and the average combined data is calculated when the "Run" button is clicked.

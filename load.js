@@ -27,12 +27,6 @@ export function safetyMessage() {
   modalTitle.innerText = 'Autotune';
   modalHeader.appendChild(modalTitle);
 
-  // var closeButton = document.createElement('button');
-  // closeButton.classList.add('btn-close');
-  // closeButton.setAttribute('data-bs-dismiss', 'modal');
-  // closeButton.setAttribute('aria-label', 'Close');
-  // modalHeader.appendChild(closeButton);
-
   var modalBody = document.createElement('div');
   modalBody.classList.add('modal-body');
   modalBody.innerText = 'Welcome to Autotune. Autotune is an experimental app that is currently under testing. Please consult with your physician before implementing any of the recommendations.';
@@ -77,3 +71,19 @@ export function setCurrentUser(userArray) {
         loadNavMenu()
     }
 }
+
+// Summary for index.js:
+
+// The file imports safetyMessage and setCurrentUser functions from "./load.js" module.
+// The file imports loadSettings function from "./views/settings.js" module.
+// It exports an options object containing:
+// url: an empty string
+// ISF: NaN
+// weight: NaN
+// user: an empty string
+// It defines an async function start which:
+// Removes "autotune_currentUser" from localStorage.
+// Sets "autotuneView" in localStorage to "settings".
+// Calls safetyMessage().
+// Calls loadSettings().
+// When the window loads, the start function is called.

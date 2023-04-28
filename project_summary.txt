@@ -1,0 +1,67 @@
+Project summary
+Summary for index.html:
+The file is an HTML document with a "UTF-8" charset and a "viewport" meta tag for responsive design.
+The title of the page is "Autotune".
+External libraries used:
+jQuery 3.6.4
+Chart.js
+Bootstrap 5.3.0-alpha3 (CSS and JS)
+DataTables 1.13.4 (CSS and JS)
+Bootstrap Datepicker 1.9.0
+The file includes a local "style.css" file and a favicon.
+The body of the document contains two divs: "main" and "footer".
+The "index.js" file is imported as a module at the end of the body. 
+
+Summary for setting.js:
+This code defines a function `loadSettings()` that loads the settings page for an application called "Autotune". The settings page allows users to add, edit, and delete user accounts, which consist of a username, URL, ISF, ICR, and weight. It uses the Bootstrap CSS framework and the DataTables.js library (with the Responsive extension) to create and manage a responsive table displaying the user accounts.
+The `loadSettings()` function first sets the `innerHTML` of the element with ID 'main' to the settings page HTML code. It then reads the saved user accounts from the browser's local storage, initializes the DataTables.js library, and populates the table with the saved user accounts.
+Event listeners are added for various interactions on the page, such as adding a new user, selecting a user from the table, and saving or deleting a user. When a user is saved, the user account data is saved to local storage, and the table is updated. When a user is deleted, the user account data is removed from local storage, and the table is updated accordingly.
+The `populateTable()` function takes an array of user accounts and populates the DataTables.js table with the data. The `setCurrentUser()` function is imported from another module and sets the current user in the application.
+Overall, this code provides a functional settings page for managing user accounts in an Autotune application.
+
+Summary for navMenu.js:
+This JavaScript code is part of a module called navMenu.js. It exports a single function called loadNavMenu. When the loadNavMenu function is called, it defines two helper functions settings and basal. It also inserts a block of HTML code containing four buttons into the "footer" element of the webpage.
+
+The settings function checks if the "autotune_currentUser" item exists in the localStorage and if the current view is not already "settings". If these conditions are met, it calls the loadSettings function and sets the "autotuneView" item in localStorage to "settings".
+
+The basal function checks if the "autotune_currentUser" item exists in the localStorage and if the current view is not already "basal". If these conditions are met, it calls the loadBasal function and sets the "autotuneView" item in localStorage to "basal".
+
+The HTML code inserted by loadNavMenu has four buttons. Each button has an associated icon and an id. The first button has the id "basal-button" and when clicked, calls the basal function. The second button has the id "isf-button" and when clicked, calls the displayView function with the parameter 'isf-view'. The third button has the id "icr-button" and when clicked, calls the displayView function with the parameter 'icr-view'. The last button has the id "settings" and when clicked, calls the settings function.
+
+To summarize, this code is responsible for loading a navigation menu with four buttons and handling the click events for these buttons to switch between different views.
+
+Summary for basal.js:
+This JavaScript code is part of a web application that helps users adjust their basal rates (continuous infusion of insulin) based on their blood glucose data. The code provides the following functionalities:
+
+1. It imports required functions from other modules.
+2. It defines a `loadBasal()` function that inserts HTML code into the main div to display various elements like a button to select dates, a modal with a datepicker to select dates for basal rate adjustment, and a line chart to visualize blood glucose data for the selected date.
+3. The `loadBasal()` function sets up event listeners for the datepicker, the "Select Dates" button, and the "Run" button in the modal. The event listeners handle the selection of dates, display of the modal, and fetching of blood glucose data and user profiles to calculate basal rate adjustments based on the selected dates, respectively.
+4. The `loadBasal()` function also includes the `getAverageCombinedData()` function that calculates average combined data (including blood glucose levels, basal rates, and other insulin therapy parameters) for the selected dates.
+5. The `updateChart()` function is defined outside the `loadBasal()` function, and it is responsible for fetching blood glucose data for the selected date, either from the local database or remotely, and then updating the line chart with this data.
+
+// When the web application is loaded, the date selection modal is automatically displayed, and users can select dates for which they want to adjust their basal rates. The line chart is updated with blood glucose data for the selected date, and the average combined data is calculated when the "Run" button is clicked.
+
+Summary for getBgData.js:
+Imports saveData function from "../localDatabase.js" and options object from "../index.js".
+Initializes bgArray as an empty array.
+Defines and exports getBGs function, which takes a currentDate argument. It checks if the BG data for the current date already exists in the local database; if it doesn't, it fetches the data from Nightscout API and saves it to the database. If the data already exists, it retrieves it from the database. The function returns the blood glucose data in the bgArray.
+Defines getSize function, which calculates the size of a JSON object in kilobytes.
+Defines roundToNearestFiveMinutes function, which rounds a given date object to the nearest 5-minute interval.
+Defines checkDataExists function, which checks if the data with a given key exists in the specified objectStore of the local database. Returns a boolean indicating if the data exists.
+
+Summary for getProfileData.js:
+Imports saveData, getData, and getTimestamp functions from "../localDatabase.js" and options object from "../index.js".
+Initializes profileData as undefined.
+Defines and exports getUserProfiles function, which retrieves user profiles from the local database. If the profiles don't exist or are older than yesterday at 12:00 am, it fetches the profiles from Nightscout API and saves them to the database. The function returns the profiles.
+Defines and exports setProfiles function, which takes profileData as input and constructs an array of profiles containing information such as startDate, endDate, basal, carbRatio, isf, lowTarget, and highTarget. The function then saves the profiles to the local database with a timestamp of yesterday's date.
+Defines getSize function, which calculates the size of a JSON object in kilobytes.
+
+Summary for getTempBasalData.js:
+Imports `saveData` and `getData` functions from "../localDatabase.js" and `options` object from "../index.js".
+Defines and exports `getTempBasalData` function, which retrieves temporary basal data for a given date. It first checks if the data exists in the local database. If it does, the function uses the stored data; otherwise, it fetches the temporary basal data from the Nightscout API. The function then processes the fetched data, corrects any discrepancies in the duration, and saves the data to the local database.
+Defines `getSize` function, which calculates the size of a JSON object in kilobytes.
+
+In summary, getTempBasalData.js is responsible for retrieving temporary basal data for a specific date, either from the local database or by fetching it from the Nightscout API. It also ensures that any discrepancies in the duration of temporary basal data are corrected before saving it to the local database.
+
+Summary for averageBGs:
+The `averageBGs.js` file exports an asynchronous function named `averageBGs` that takes a parameter `selectedDates`. The function calculates the average of the blood glucose levels for each 5-minute period of time for the selected dates. The function retrieves data from a local database using the `getData` function from `localDatabase.js`. The retrieved data is used to fill in missing values and calculate the averages. The function returns an array of length 289, with each element containing the average blood glucose level for the corresponding 5-minute period.

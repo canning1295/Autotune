@@ -214,3 +214,11 @@ export async function getTimestamp(objectStoreName, key) {
 	})
 }
 
+// Summary for localDatabase.js:
+
+// Imports options object from "../index.js".
+// Defines and exports initializeDB function, which initializes an IndexedDB instance with the following objectStores: 'BGs', 'Profiles', 'Basal_Rates', and 'Combined_Data'.
+// Defines and exports saveData function, which takes four arguments: objectStoreName, key, value, and timestamp. It saves the data to the specified objectStore, converting non-primitive data types as necessary.
+// Defines and exports getData function, which takes two arguments: objectStoreName and key. It retrieves data from the specified objectStore using the provided key, and parses the value based on its data type before returning it.
+// Defines and exports closeDB function, which closes the IndexedDB connection if it exists.
+// Defines and exports getTimestamp function, which takes two arguments: objectStoreName and key. It retrieves the timestamp for the specified key in the given objectStore.

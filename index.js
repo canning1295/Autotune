@@ -15,9 +15,20 @@ async function start() {
 	localStorage.setItem("autotuneView", "settings")
 	safetyMessage()
 	loadSettings()
-	
-	// await initializeDB(options)
-	// getUserProfiles(options)
-	// const profiles = await getData(options.user, 'profiles')
-	// console.log('Profiles', profiles)
 };
+
+// Summary for index.js:
+
+// The file imports safetyMessage and setCurrentUser functions from "./load.js" module.
+// The file imports loadSettings function from "./views/settings.js" module.
+// It exports an options object containing:
+// url: an empty string
+// ISF: NaN
+// weight: NaN
+// user: an empty string
+// It defines an async function start which:
+// Removes "autotune_currentUser" from localStorage.
+// Sets "autotuneView" in localStorage to "settings".
+// Calls safetyMessage().
+// Calls loadSettings().
+// When the window loads, the start function is called.

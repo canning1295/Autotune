@@ -202,3 +202,13 @@ export function loadSettings() {
     ])).draw();
     };
 };
+
+// This code defines a function `loadSettings()` that loads the settings page for an application called "Autotune". The settings page allows users to add, edit, and delete user accounts, which consist of a username, URL, ISF, ICR, and weight. It uses the Bootstrap CSS framework and the DataTables.js library (with the Responsive extension) to create and manage a responsive table displaying the user accounts.
+
+// The `loadSettings()` function first sets the `innerHTML` of the element with ID 'main' to the settings page HTML code. It then reads the saved user accounts from the browser's local storage, initializes the DataTables.js library, and populates the table with the saved user accounts.
+
+// Event listeners are added for various interactions on the page, such as adding a new user, selecting a user from the table, and saving or deleting a user. When a user is saved, the user account data is saved to local storage, and the table is updated. When a user is deleted, the user account data is removed from local storage, and the table is updated accordingly.
+
+// The `populateTable()` function takes an array of user accounts and populates the DataTables.js table with the data. The `setCurrentUser()` function is imported from another module and sets the current user in the application.
+
+// Overall, this code provides a functional settings page for managing user accounts in an Autotune application.

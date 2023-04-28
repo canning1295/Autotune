@@ -37,3 +37,5 @@ export async function averageBGs(selectedDates) {
 
     return averages;
 }
+
+// The `averageBGs.js` file exports an asynchronous function named `averageBGs` that takes a parameter `selectedDates`. The function calculates the average of the blood glucose levels for each 5-minute period of time for the selected dates. The function retrieves data from a local database using the `getData` function from `localDatabase.js`. The retrieved data is used to fill in missing values and calculate the averages. The function returns an array of length 289, with each element containing the average blood glucose level for the corresponding 5-minute period.

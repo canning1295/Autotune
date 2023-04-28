@@ -45,3 +45,13 @@ export function loadNavMenu() {
     document.getElementById('settings').addEventListener('click', settings);
     document.getElementById('basal-button').addEventListener('click', basal);
 }
+
+// This JavaScript code is part of a module called navMenu.js. It exports a single function called loadNavMenu. When the loadNavMenu function is called, it defines two helper functions settings and basal. It also inserts a block of HTML code containing four buttons into the "footer" element of the webpage.
+
+// The settings function checks if the "autotune_currentUser" item exists in the localStorage and if the current view is not already "settings". If these conditions are met, it calls the loadSettings function and sets the "autotuneView" item in localStorage to "settings".
+
+// The basal function checks if the "autotune_currentUser" item exists in the localStorage and if the current view is not already "basal". If these conditions are met, it calls the loadBasal function and sets the "autotuneView" item in localStorage to "basal".
+
+// The HTML code inserted by loadNavMenu has four buttons. Each button has an associated icon and an id. The first button has the id "basal-button" and when clicked, calls the basal function. The second button has the id "isf-button" and when clicked, calls the displayView function with the parameter 'isf-view'. The third button has the id "icr-button" and when clicked, calls the displayView function with the parameter 'icr-view'. The last button has the id "settings" and when clicked, calls the settings function.
+
+// To summarize, this code is responsible for loading a navigation menu with four buttons and handling the click events for these buttons to switch between different views.
