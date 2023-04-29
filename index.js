@@ -6,6 +6,7 @@ export const options = {
 	ISF: NaN,
 	weight: NaN,
 	user: "",
+	profiles: [],
 };
 
 window.onload = () => start();

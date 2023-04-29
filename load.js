@@ -1,5 +1,6 @@
 import { options } from "./index.js";
 import { initializeDB, closeDB } from "./localDatabase.js";
+import { getUserProfiles } from "./nightscout_data/getProfileData.js";
 import { loadNavMenu } from "./views/navMenu.js";
 
 export function safetyMessage() {
@@ -57,7 +58,7 @@ export function safetyMessage() {
   modalInstance.show();
 }
 
-export function setCurrentUser(userArray) {
+export async function setCurrentUser(userArray) {
     localStorage.setItem('autotune_currentUser', JSON.stringify(userArray));
     const currentUser = userArray;
     if (currentUser) {
@@ -67,8 +68,9 @@ export function setCurrentUser(userArray) {
         options.icr = currentUser.icr;
         options.weight = currentUser.weight;
         closeDB()
-        initializeDB()
+        await initializeDB()
         loadNavMenu()
+        options.profiles = (await getUserProfiles()).reverse();
     }
 }
 

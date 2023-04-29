@@ -1,39 +1,38 @@
-import { saveData } from "../localDatabase.js"
+import { saveData, getData } from "../localDatabase.js"
 import { options } from "../index.js"
 
 let bgArray = []
 export async function getBGs(currentDate) {
 	console.log("current Date sent to retrieve BGs: ", currentDate)
-	currentDate = currentDate.toISOString().split("T")[0]
-	let NSDate1 = new Date(currentDate)
-	let NSDate2 = new Date(currentDate)
-	NSDate1.setDate(NSDate1.getDate() + 1)
-	NSDate2.setDate(NSDate2.getDate() + 2)
-	NSDate1 = NSDate1.toISOString().split("T")[0]
-	NSDate2 = new Date(NSDate2).toISOString().split("T")[0]
-  
-	// Parse the date string and create a Date object.
-	const dateObj = new Date(NSDate1);
-	const nextDateObj = new Date(NSDate2);
-  
-	// Set the local time to midnight.
-	dateObj.setHours(0, 0, 0, 0);
-	nextDateObj.setHours(0, 0, 0, 0);
-  
-	// Subtract 2 minutes and 30 seconds from dateObj
-	const adjustedDateObj = new Date(dateObj.getTime() - (2 * 60 * 1000 + 30 * 1000));
-  
-	// Create a function to pad single-digit numbers with a leading zero.
-	function padNumber(number) {
-	  return number.toString().padStart(2, '0');
-	}
-  
-	// Convert the date object to the desired string format.
-	const dateStringUTC = `${adjustedDateObj.getUTCFullYear()}-${padNumber(adjustedDateObj.getUTCMonth() + 1)}-${padNumber(adjustedDateObj.getUTCDate())}T${padNumber(adjustedDateObj.getUTCHours())}:${padNumber(adjustedDateObj.getUTCMinutes())}:${padNumber(adjustedDateObj.getUTCSeconds())}Z`;
-
-	const nextDateStringUTC = `${nextDateObj.getUTCFullYear()}-${padNumber(nextDateObj.getUTCMonth() + 1)}-${padNumber(nextDateObj.getUTCDate())}T${padNumber(nextDateObj.getUTCHours())}:00:00Z`;
-
 		if (await checkDataExists('BGs', currentDate) === false) {
+			currentDate = currentDate.toISOString().split("T")[0]
+			let NSDate1 = new Date(currentDate)
+			let NSDate2 = new Date(currentDate)
+			NSDate1.setDate(NSDate1.getDate() + 1)
+			NSDate2.setDate(NSDate2.getDate() + 2)
+			NSDate1 = NSDate1.toISOString().split("T")[0]
+			NSDate2 = new Date(NSDate2).toISOString().split("T")[0]
+		  
+			// Parse the date string and create a Date object.
+			const dateObj = new Date(NSDate1);
+			const nextDateObj = new Date(NSDate2);
+		  
+			// Set the local time to midnight.
+			dateObj.setHours(0, 0, 0, 0);
+			nextDateObj.setHours(0, 0, 0, 0);
+		  
+			// Subtract 2 minutes and 30 seconds from dateObj
+			const adjustedDateObj = new Date(dateObj.getTime() - (2 * 60 * 1000 + 30 * 1000));
+		  
+			// Create a function to pad single-digit numbers with a leading zero.
+			function padNumber(number) {
+			  return number.toString().padStart(2, '0');
+			}
+		  
+			// Convert the date object to the desired string format.
+			const dateStringUTC = `${adjustedDateObj.getUTCFullYear()}-${padNumber(adjustedDateObj.getUTCMonth() + 1)}-${padNumber(adjustedDateObj.getUTCDate())}T${padNumber(adjustedDateObj.getUTCHours())}:${padNumber(adjustedDateObj.getUTCMinutes())}:${padNumber(adjustedDateObj.getUTCSeconds())}Z`;
+		
+			const nextDateStringUTC = `${nextDateObj.getUTCFullYear()}-${padNumber(nextDateObj.getUTCMonth() + 1)}-${padNumber(nextDateObj.getUTCDate())}T${padNumber(nextDateObj.getUTCHours())}:00:00Z`;
 			const bgUrl = options.url.concat(
 				"/api/v1/entries/sgv.json?find[dateString][$gte]=",
 				dateStringUTC,
@@ -61,38 +60,7 @@ export async function getBGs(currentDate) {
 			saveData('BGs', key, bgArray, currentDate);
 			
 		} else {
-			// console.log("BGs already exist for " + currentDate)
-			const databaseName = `Autotune_${options.user}`;
-			const objectStoreName = 'BGs';
-			const key = currentDate
-			const request = indexedDB.open(databaseName);
-			// console.log('options', options)
-			// console.log('objectStoreName: ', objectStoreName, 'key: ', key, 'request: ', request)
-			  
-			return new Promise((resolve, reject) => {
-				request.onsuccess = () => {
-				const db = request.result;
-				const transaction = db.transaction([objectStoreName], 'readonly');
-				const objectStore = transaction.objectStore(objectStoreName);
-				const getRequest = objectStore.get(key);
-			
-				getRequest.onerror = () => {
-					reject(new Error('Failed to get data from object store'));
-				};
-			
-				getRequest.onsuccess = () => {
-					let bgData = getRequest.result?.value;
-					if (typeof bgData === 'string') {
-					bgData = JSON.parse(bgData).map(({ bg }) => parseFloat(bg));
-					}
-					resolve(bgData);
-				};
-				};
-			
-				request.onerror = () => {
-				reject(new Error('Failed to open database'));
-				};
-			});
+			await getData('BGs', currentDate)
 		}
 		// console.log("bgArray: ", bgArray)
 	return bgArray

@@ -1,5 +1,7 @@
 import { setCurrentUser } from '../load.js';
 import { loadNavMenu } from './navMenu.js';
+import { getUserProfiles } from '../nightscout_data/getProfileData.js';
+import { closeDB } from '../localDatabase.js';
 
 export function loadSettings() {
   console.log('Loading settings')
@@ -75,7 +77,6 @@ export function loadSettings() {
     let users = JSON.parse(localStorage.getItem('autotune_users')) || [];
 
     $(document).ready(function() {
-        console.log('Initializing DataTables.js (Responsive extension)...')
         $('#userTable').DataTable({
             searching: false,
             lengthChange: false,
@@ -117,7 +118,7 @@ export function loadSettings() {
 
     let currentUser = JSON.parse(localStorage.getItem('autotune_currentUser')) || [];
 
-    $('#userTable tbody').on('click', 'tr', function (event) {
+    $('#userTable tbody').on('click', 'tr', async function (event) {
         if ($(event.target).hasClass('details-control')) {
             return;
         } else {
@@ -125,7 +126,8 @@ export function loadSettings() {
             $(this).children('td').each(function () {
                 tableData.push($(this).text());
             });
-
+            localStorage.removeItem('autotune_currentUser');
+            await closeDB()
             let usersList = localStorage.getItem('autotune_users');
             let users = usersList ? JSON.parse(usersList) : [];
             

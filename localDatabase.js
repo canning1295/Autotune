@@ -96,7 +96,6 @@ export async function saveData(objectStoreName, key, value, timestamp) {
 
 	return new Promise((resolve, reject) => {
 		// Create a transaction with readwrite mode
-		console.log('objectStoreName', objectStoreName)
 		const transaction = db.transaction([objectStoreName], "readwrite")
 
 		// Get the object store
@@ -107,7 +106,6 @@ export async function saveData(objectStoreName, key, value, timestamp) {
 
 		// Handle the success event of the put request
 		putRequest.onsuccess = (event) => {
-			console.log("Data saved successfully")
 			resolve(event.target.result)
 		}
 
@@ -177,7 +175,7 @@ export async function closeDB() {
 		db.close()
 		console.log("Database connection closed")
 	} else {
-		console.log("No database connection to close")
+		// console.log("No database connection to close")
 	}
 }
 

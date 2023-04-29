@@ -2,24 +2,31 @@ import { saveData, getData } from "../localDatabase.js";
 import { options } from "../index.js";
 
 export async function getTempBasalData(currentDate) {
-  currentDate = new Date(currentDate);
-  let nextDate = new Date(currentDate);
-  nextDate.setDate(currentDate.getDate() + 1);
-  currentDate = currentDate.toISOString().split("T")[0];
-  nextDate = nextDate.toISOString().split("T")[0];
-
   const storedData = await getData("Basal_Rates", currentDate);
 
   if (storedData) {
     console.log("Using stored temp basal data");
     return storedData;
   }
+  currentDate = new Date(currentDate);
+  // currentDate.setDate(currentDate.getDate() + 1);
+  let nextDate = new Date(currentDate);
+  nextDate.setDate(currentDate.getDate() + 1);
 
+  function padNumber(number) {
+    return number.toString().padStart(2, '0');
+  }
+
+  currentDate.setHours(0, 0, 0, 0);
+  const currentDateUTC = `${currentDate.getUTCFullYear()}-${padNumber(currentDate.getUTCMonth() + 1)}-${padNumber(currentDate.getUTCDate())}T${padNumber(currentDate.getUTCHours())}:00:00Z`;
+
+  nextDate.setHours(0, 0, 0, 0);
+  const nextDateUTC = `${nextDate.getUTCFullYear()}-${padNumber(nextDate.getUTCMonth() + 1)}-${padNumber(nextDate.getUTCDate())}T${padNumber(nextDate.getUTCHours())}:00:00Z`;
   const tempBasalUrl = options.url.concat(
     "/api/v1/treatments.json?find[created_at][$gte]=",
-    currentDate,
+    currentDateUTC,
     "&find[created_at][$lte]=",
-    nextDate,
+    nextDateUTC,
     "&find[eventType]=Temp+Basal",
     "&count=1000000"
   );
@@ -39,7 +46,6 @@ export async function getTempBasalData(currentDate) {
   });
 
   tempBasals = tempBasals.reverse();
-
   // Fixup temp basal durations to account for rounding discrepancies and errors in the logging
   for (let i = 1; i < tempBasals.length; i++) {
     let previousEnd = new Date(
@@ -55,7 +61,6 @@ export async function getTempBasalData(currentDate) {
       tempBasals[i - 1].duration = diff;
     }
   }
-
   await saveData("Basal_Rates", currentDate, tempBasals, new Date());
   return tempBasals;
 }

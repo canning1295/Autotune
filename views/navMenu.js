@@ -1,5 +1,5 @@
 import { loadSettings } from "./settings.js";
-import { loadBasal } from "./basal.js";
+import { loadBasal } from "./basal/basal.js";
 
 
 export function loadNavMenu() {

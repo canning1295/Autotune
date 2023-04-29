@@ -2,33 +2,35 @@ import { getData } from "../localDatabase.js";
 
 // Function to retrieve Combined_Data for a given day and calculate the total insulin delivered
 export async function getInsulinDelivered(date) {
-  const combinedDataKey = `Combined_Data_${date}`;
-  const objectStoreName = 'Combined_Data';
-  const combinedDataArray = await getData(objectStoreName, combinedDataKey);
+    const key = date;
+    const objectStoreName = 'Combined_Data';
+    const combinedDataArray = await getData(objectStoreName, key);
+    console.log('combinedDataArray: ', combinedDataArray)
+    // Calculate the total insulin delivered for the day
+    let totalInsulinDelivered = 0;
+    let programmedTotalInsulinDelivered = 0;
+    let i = 0;
+  
+    for (const combinedData of combinedDataArray) {
+        const actualBasal = combinedData.actualBasal
+        const profileBasal = combinedData.profileBasal
 
-  if (!combinedDataArray || combinedDataArray.length === 0) {
-    throw new Error(`No Combined_Data found for the date: ${date}`);
-  }
+        if (actualBasal === undefined || actualBasal === null || isNaN(actualBasal)) {
+        throw new Error('Invalid actualBasal data');
+        }
 
-  // Calculate the total insulin delivered for the day
-  let totalInsulinDelivered = 0;
-  const minutesInDay = 1440;
-
-  for (const combinedData of combinedDataArray) {
-    const actualBasal = combinedData.actualBasal;
-
-    if (actualBasal === undefined || actualBasal === null || isNaN(actualBasal)) {
-      throw new Error('Invalid actualBasal data');
+        const insulinPerEntry = actualBasal / 60 * 5; // insulin delivered in the 5 minute period
+        const insulinPerEntryProgrammed = profileBasal / 60 * 5; // *Programmed (default profile) insulin delivered in the 5 minute period
+        totalInsulinDelivered += insulinPerEntry;
+        programmedTotalInsulinDelivered += insulinPerEntryProgrammed;
+        // console.log(i, 'actualBasal', actualBasal, 'insulinPerEntry', insulinPerEntry, 'totalInsulinDelivered', totalInsulinDelivered, )
+        // console.log(i, 'profileBasal', profileBasal, 'insulinPerEntryProgrammed', insulinPerEntryProgrammed, 'programmedTotalInsulinDelivered', programmedTotalInsulinDelivered)
+        i++
     }
 
-    const insulinPerEntry = actualBasal * (minutesInDay / combinedDataArray.length) / 60;
-    totalInsulinDelivered += insulinPerEntry;
-  }
-
-  // Round the result to a precision of 6 decimal places
-  totalInsulinDelivered = parseFloat(totalInsulinDelivered.toFixed(6));
-
-  return totalInsulinDelivered;
+    // Round the result to a precision of 1 decimal places
+    totalInsulinDelivered = parseFloat(totalInsulinDelivered.toFixed(1));
+    programmedTotalInsulinDelivered = parseFloat(programmedTotalInsulinDelivered.toFixed(1));
+    console.log('programmedTotalInsulinDelivered', programmedTotalInsulinDelivered)
+    console.log('totalInsulinDelivered', totalInsulinDelivered)
 }
-
-
