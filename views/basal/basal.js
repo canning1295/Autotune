@@ -1,6 +1,8 @@
 import { updateChart } from "./updateChart.js";
 import { processData } from "./processData.js";
-import { getAverageCombinedData } from "./calculateBasal.js";
+import { getAverageCombinedData } from "./createAvgCombinedData.js";
+import { showLoadingAnimation, hideLoadingAnimation } from '../../loadingAnimation.js';
+import { adjustBasalRates } from "../../calculations/adjustBasal.js";
 
 export function loadBasal() {
     // JavaScript code to insert HTML into the "main" div
@@ -71,6 +73,7 @@ export function loadBasal() {
 
         // Add selected date to array and display it on the page
         $("#datepicker").on("changeDate", function (e) {
+            showLoadingAnimation();
             var selectedDate = e.date;
         
             if (selectedDates.some(date => date.getTime() === selectedDate.getTime())) {
@@ -87,6 +90,7 @@ export function loadBasal() {
             // Call updateChart() function without awaiting its completion
             updateChart(selectedDate);
             processData(selectedDate)
+            hideLoadingAnimation();
         });
         
         const selectDatesButton = document.getElementById("selectDatesButton");
@@ -97,10 +101,11 @@ export function loadBasal() {
         });
 
         // Add event listener to the "Run" button
-        document.getElementById("calculate-basals").addEventListener("click", () => {
+        document.getElementById("calculate-basals").addEventListener("click", async () => {
             console.log('selectedDates passed in run function: ', selectedDates)
             // let selectedDate = selectedDates[0];
-            getAverageCombinedData(selectedDates)
+            let AverageCombinedData = await getAverageCombinedData(selectedDates)
+            adjustBasalRates(AverageCombinedData)
         });         
     });
 

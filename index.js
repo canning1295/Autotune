@@ -7,6 +7,10 @@ export const options = {
 	weight: NaN,
 	user: "",
 	profiles: [],
+	targetBG: NaN,
+	poolingTime: 120,
+	lowTargetBG: 80,
+	targetBG: 100,
 };
 
 window.onload = () => start();

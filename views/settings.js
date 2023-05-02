@@ -1,6 +1,6 @@
 import { setCurrentUser } from '../load.js';
 import { loadNavMenu } from './navMenu.js';
-import { getUserProfiles } from '../nightscout_data/getProfileData.js';
+import { showLoadingAnimation, hideLoadingAnimation } from '../loadingAnimation.js';
 import { closeDB } from '../localDatabase.js';
 
 export function loadSettings() {
@@ -122,6 +122,7 @@ export function loadSettings() {
         if ($(event.target).hasClass('details-control')) {
             return;
         } else {
+            showLoadingAnimation();
             let tableData = [];
             $(this).children('td').each(function () {
                 tableData.push($(this).text());
@@ -153,6 +154,7 @@ export function loadSettings() {
             document.getElementById('deleteBtn').style.display = 'block';
             // localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
             userModal.show();
+            hideLoadingAnimation();
         }
     });
 

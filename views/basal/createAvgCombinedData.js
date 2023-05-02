@@ -62,6 +62,6 @@ export async function getAverageCombinedData(selectedDates) {
         lowTarget: avgLowTarget,
       });
     }
-    console.log('averageCombinedData: ', averageCombinedData)
-    // return averageCombinedData;
+    // console.log('averageCombinedData: ', averageCombinedData)
+    return averageCombinedData;
 }

@@ -1,4 +1,5 @@
 import { getData } from '../../localDatabase.js';
+import { getBGs } from '../../nightscout_data/getBgData.js';
 
 export async function updateChart(date) {
     // set <p id="instruct1"> to display: none
@@ -14,7 +15,7 @@ export async function updateChart(date) {
     // If the data is not in the local database, fetch it from the remote location
     if (bgData === null) {
         bgData = await getBGs(date);
-        // console.log('remote bgData: ', bgData);
+        console.log('Didn\'t find data in local database, so fetched it from the remote location');
     }
 
     // Make sure we have the data before proceeding
