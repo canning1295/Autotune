@@ -49,6 +49,7 @@ export async function processData(selectedDate) {
                 new Date(profile.startDate) <= startFiveMinWindow &&
                 new Date(profile.endDate) >= startFiveMinWindow
         );
+        // TODO: Handle case where profile is null
         const timeAsSeconds = startFiveMinWindow.getHours() * 3600 + startFiveMinWindow.getMinutes() * 60 + startFiveMinWindow.getSeconds();
         const profileBasal = getValueForTime(profile.basal, timeAsSeconds);
         const carbRatio = getValueForTime(profile.carbRatio, timeAsSeconds);
