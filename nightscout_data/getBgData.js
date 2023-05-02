@@ -3,8 +3,11 @@ import { options } from "../index.js"
 
 let bgArray = []
 export async function getBGs(currentDate) {
+	// currentDate = currentDate.toISOString().split("T")[0]
+	bgArray = await getData('BGs', currentDate)
+	console.log("bgArray: ", bgArray, 'currentDate: ', currentDate, typeof(currentDate))
 	console.log("current Date sent to retrieve BGs: ", currentDate)
-		if (await checkDataExists('BGs', currentDate) === false) {
+		if (!bgArray) {
 			currentDate = currentDate.toISOString().split("T")[0]
 			let NSDate1 = new Date(currentDate)
 			let NSDate2 = new Date(currentDate)
@@ -60,7 +63,7 @@ export async function getBGs(currentDate) {
 			saveData('BGs', key, bgArray, currentDate);
 			
 		} else {
-			await getData('BGs', currentDate)
+			//
 		}
 		// console.log("bgArray: ", bgArray)
 	return bgArray
@@ -79,43 +82,6 @@ function roundToNearestFiveMinutes(date) {
 	const roundedTime = new Date(Math.round(date.getTime() / coeff) * coeff);
 	return roundedTime;
   }
-
-
-function checkDataExists(objectStoreName, key) {
-key = key;
-// console.log('key: ', key);
-const databaseName = `Autotune_${options.user}`;
-const request = indexedDB.open(databaseName);
-// console.log('objectStoreName: ', objectStoreName);
-return new Promise((resolve, reject) => {
-	request.onsuccess = () => {
-	const db = request.result;
-
-	// Check if the objectStore exists in the database
-	if (!db.objectStoreNames.contains(objectStoreName)) {
-		resolve(false);
-		return;
-	}
-
-	const transaction = db.transaction([objectStoreName], 'readonly');
-	const objectStore = transaction.objectStore(objectStoreName);
-	const getRequest = objectStore.get(key);
-
-	getRequest.onerror = () => {
-		reject(new Error('Failed to get data from object store'));
-	};
-
-	getRequest.onsuccess = () => {
-		const dataExists = getRequest.result != null;
-		resolve(dataExists);
-	};
-	};
-
-	request.onerror = () => {
-	reject(new Error('Failed to open database'));
-	};
-});
-}
 
 // Summary for getBgData.js:
 

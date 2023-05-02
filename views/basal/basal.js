@@ -31,7 +31,6 @@ export function loadBasal() {
                             <div class="col-md-6">
                                 <div id="calendarContainer">
                                     <div id="datepicker" class="form-control"></div>
-                                    <!-- Insert the toggle code here -->
                                     <div class="form-check mt-3">
                                         <input class="form-check-input" type="checkbox" value="" id="includeTempBasal" checked />
                                         <label class="form-check-label" for="includeTempBasal">Include temp basal delivery in calculations</label>
@@ -59,6 +58,7 @@ export function loadBasal() {
         keepOpen: true, // keep calendar open after date selection
         container: "#datepicker",
         keyboardNavigation: false,
+        gotoCurrent: true,
         beforeShowDay: function (date) {
             for (var i = 0; i < selectedDates.length; i++) {
                 // Check if date is in the selectedDates array
@@ -73,25 +73,39 @@ export function loadBasal() {
 
         // Add selected date to array and display it on the page
         $("#datepicker").on("changeDate", function (e) {
-            showLoadingAnimation();
             var selectedDate = e.date;
-        
+            if (selectedDate >= new Date(Date.now() - 86400000)) {
+                return;
+              }// do not allow selection of today or future dates
             if (selectedDates.some(date => date.getTime() === selectedDate.getTime())) {
                 // Remove date from array if already selected
                 selectedDates = selectedDates.filter(date => date.getTime() !== selectedDate.getTime());
+                // Call updateChart() function only if there are any selected dates left
+                if (selectedDates.length > 0) {
+                    updateChart(selectedDates[selectedDates.length-1]);
+                }
             } else {
                 // Add date to array if not already selected
                 selectedDates.push(selectedDate);
+                // Refresh the date picker to update the appearance of the selected dates
+                $("#datepicker").datepicker('update');
+        
+                // Call updateChart() function without awaiting its completion
+                updateChart(selectedDate);
+                processData(selectedDate)
             }
-        
-            // Refresh the date picker to update the appearance of the selected dates
             $("#datepicker").datepicker('update');
-        
-            // Call updateChart() function without awaiting its completion
-            updateChart(selectedDate);
-            processData(selectedDate)
-            hideLoadingAnimation();
+            
+            // Check if there are any selected dates
+            if (selectedDates.length > 0) {
+                // Update the datepicker's view to show the month of the last date in the selectedDates array
+                var lastDate = selectedDates[selectedDates.length - 1];
+                $("#datepicker").datepicker('setUTCMonth', lastDate.getUTCMonth(), lastDate.getUTCFullYear());
+            }
         });
+        
+        
+        
         
         const selectDatesButton = document.getElementById("selectDatesButton");
         const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));

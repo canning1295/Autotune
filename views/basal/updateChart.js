@@ -15,7 +15,7 @@ export async function updateChart(date) {
     // If the data is not in the local database, fetch it from the remote location
     if (bgData === null) {
         bgData = await getBGs(date);
-        console.log('Didn\'t find data in local database, so fetched it from the remote location');
+        console.log('Retreiving data from Nightscout');
     }
 
     // Make sure we have the data before proceeding
