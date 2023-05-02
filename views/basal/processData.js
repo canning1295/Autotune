@@ -6,22 +6,11 @@ import { getInsulinDelivered } from "../../../calculations/checks.js";
 
 export async function processData(selectedDate) {
     let date = new Date(selectedDate);
-    function getValueForTime(array, timeAsSeconds) {
-        let value = array[0].value;
-        for (let i = 0; i < array.length; i++) {
-            if (array[i].timeAsSeconds <= timeAsSeconds) {
-                value = array[i].value;
-            } else {
-                break;
-            }
-        }
-        return value;
-    }
-    
     selectedDate.toISOString().slice(0, 10);
     console.log('selectedDate: ', selectedDate)
     let bgData = await getBGs(selectedDate);
     date.setHours(0, 0, 0, 0);
+    console.log('date: ', date, 'bgData: ', bgData)
 
     let combinedData = [];
     let deliveredBasals = await getTempBasalData(selectedDate);
@@ -33,20 +22,28 @@ export async function processData(selectedDate) {
             combinedData = existingData;
             break;
         }
-        let bg;
+        
+        let bg = null;
         let startFiveMinWindow;
         let endFiveMinWindow;
 
-        if (new Date(bgData[i].time) > date) {
-            let prevDate = new Date(selectedDate);
-            prevDate.setDate(prevDate.getDate() - 1);
-            let prevBGs = await getBGs(prevDate);
-            bg = prevBGs[prevBGs.length - 1].bg;
-        }
-
-        bg = bgData[i].bg;
-        startFiveMinWindow = new Date(bgData[i].time);
+        // if (new Date(bgData[i].time) > date) {
+        //     let prevDate = new Date(selectedDate);
+        //     prevDate.setDate(prevDate.getDate() - 1);
+        //     prevDate.toISOString()
+        //     let prevBGs = await getBGs(prevDate);
+        //     console.log('Could this be triggering the error?', prevBGs)
+        //     bg = prevBGs[prevBGs.length - 1].bg;
+        // }
+        date.setMinutes(date.getMinutes() + i * 5);
+        const matchingData = bgData.find(data => data.time.getTime() === date.getTime());
+        if (matchingData) {
+            bg = matchingData.bg;
+          }
+        if(!matchingData) {console.log('No matching data for: ', date)}
+        startFiveMinWindow = date
         endFiveMinWindow = new Date(startFiveMinWindow.getTime() + 5 * 60000);
+        
         let profile = options.profiles.find(
             (profile) =>
                 new Date(profile.startDate) <= startFiveMinWindow &&
@@ -110,4 +107,17 @@ export async function processData(selectedDate) {
     let timestamp = new Date();
     await saveData("Combined_Data", key, combinedData, timestamp);
     let totalBasalInsulinDelivered = await getInsulinDelivered(key);
+
+    function getValueForTime(array, timeAsSeconds) {
+        let value = array[0].value;
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].timeAsSeconds <= timeAsSeconds) {
+                value = array[i].value;
+            } else {
+                break;
+            }
+        }
+        return value;
+    }
+    
 }
