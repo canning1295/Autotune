@@ -26,13 +26,18 @@ export async function getUserProfiles() {
 export async function setProfiles(profileData) {
 	const profiles = []
 	let start = false
+	const now = new Date();
+	const midnightTonight = new Date();
+	midnightTonight.setHours(0, 0, 0, 0);
+	midnightTonight.setDate(midnightTonight.getDate() + 1);
+
 	for (let i = 0; i < profileData.length; i++) {
 		let obj = profileData[i]
 		let startDate = new Date(obj.startDate)
 		let endDate = new Date(
 			i + 1 < profileData.length
 				? profileData[i + 1].startDate
-				: new Date()
+				: midnightTonight
 		)
 		let basalProfile = {
 			startDate: startDate,
