@@ -115,7 +115,8 @@ export function loadBasal() {
 
         // Add event listener to the "Run" button
         document.getElementById("calculate-basals").addEventListener("click", async () => {
-            console.log('selectedDates passed in run function: ', selectedDates)
+            if(selectedDates.length < 2) {alert('Please select at least 2 dates to run the basal rate adjustment calculations.'); return;}
+            // console.log('selectedDates passed in run function: ', selectedDates)
             // let selectedDate = selectedDates[0];
             let AverageCombinedData = await getAverageCombinedData(selectedDates)
             adjustBasalRates(AverageCombinedData)

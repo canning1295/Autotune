@@ -15,13 +15,13 @@ export async function adjustBasalRates(averageCombinedData) {
     const averageBG = averageCombinedData.map((data) => data.bg).reduce((a, b) => a + b) / averageCombinedData.length;
     const insulinLikelyNeeded = (averageBG - targetBG) / isf * 24 / averageDIALength;
     const insulinNeededPerHour = insulinLikelyNeeded / 24;
-    console.log('insulinNeededPerHour', insulinNeededPerHour,'insulinLikelyNeeded', insulinLikelyNeeded, 'averageDIALength',averageDIALength,averageBG , targetBG)
+    console.log('insulinNeededPerHour', insulinNeededPerHour,'insulinLikelyNeeded', insulinLikelyNeeded, 'averageDIALength',averageDIALength,'AverageBG',averageBG , 'TargetBG', targetBG)
     const minAdjustment = getMin(averageCombinedData) / averageDIALength;
     const maxAdjustment = getMax(averageCombinedData) / averageDIALength;
     
     
     const averageBGEnd = predictedBGs.reduce((a, b) => a + b) / predictedBGs.length;
-    const lineBreak = '------------------------------------------------------------------------------------------------------------------------';
+
 
     return runCalcs();
 
@@ -36,41 +36,38 @@ export async function adjustBasalRates(averageCombinedData) {
         for (let i = 0; i < 2; i++) {
             const continueLoop1Filter = continueLoop1.filter(value => !value).length
             if(continueLoop1Filter >= 220){console.log('false count', continueLoop1Filter); break}
-            console.log(lineBreak,'continueLoop1 false count', continueLoop1.filter(value => !value).length)
             currentAdjustment = insulinNeededPerHour / 12 / 2
-            console.log('currentAdjustment', currentAdjustment)
             const currentCurves = getDIA(estimatedBasals, currentAdjustment);
-            console.log('currentCurves', currentCurves)
             const count = 1;
             await estimateBGs(currentCurves, currentAdjustment, count);
         }
-        // for (let i = 0; i < 4; i++) {
-        //     const continueLoop2Filter = continueLoop1.filter(value => !value).length
-        //     if(continueLoop2Filter >= 220){console.log('false count', continueLoop2Filter); break}
-        //     currentAdjustment = insulinNeededPerHour / 12 / 4
-        //     const currentCurves = getDIA(estimatedBasals, currentAdjustment);
-        //     const count = 2
-        //     await estimateBGs(currentCurves, currentAdjustment, count);
-        // }
-        // for (let i = 0; i < 8; i++) {
-        //     const continueLoop3Filter = continueLoop1.filter(value => !value).length
-        //     if(continueLoop3Filter >= 220){console.log('false count', continueLoop3Filter); break}
-        //     currentAdjustment = insulinNeededPerHour / 12 / 8
-        //     const currentCurves = getDIA(estimatedBasals, currentAdjustment);
-        //     const count = 3
-        //     await estimateBGs(currentCurves, currentAdjustment, count);
-        // }
-        // for (let i = 0; i < 16; i++) {
-        //     const continueLoop4Filter = continueLoop1.filter(value => !value).length
-        //     if(continueLoop4Filter >= 220){console.log('false count', continueLoop4Filter); break}
-        //     currentAdjustment = insulinNeededPerHour / 12 / 10
-        //     const currentCurves = getDIA(estimatedBasals, currentAdjustment);
-        //     const count = 4
-        //     await estimateBGs(currentCurves, currentAdjustment, count);
-        // }
+        for (let i = 0; i < 4; i++) {
+            const continueLoop2Filter = continueLoop1.filter(value => !value).length
+            if(continueLoop2Filter >= 220){console.log('false count', continueLoop2Filter); break}
+            currentAdjustment = insulinNeededPerHour / 12 / 4
+            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+            const count = 2
+            await estimateBGs(currentCurves, currentAdjustment, count);
+        }
+        for (let i = 0; i < 8; i++) {
+            const continueLoop3Filter = continueLoop1.filter(value => !value).length
+            if(continueLoop3Filter >= 220){console.log('false count', continueLoop3Filter); break}
+            currentAdjustment = insulinNeededPerHour / 12 / 8
+            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+            const count = 3
+            await estimateBGs(currentCurves, currentAdjustment, count);
+        }
+        for (let i = 0; i < 16; i++) {
+            const continueLoop4Filter = continueLoop1.filter(value => !value).length
+            if(continueLoop4Filter >= 220){console.log('false count', continueLoop4Filter); break}
+            currentAdjustment = insulinNeededPerHour / 12 / 10
+            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+            const count = 4
+            await estimateBGs(currentCurves, currentAdjustment, count);
+        }
         // for (let i = 0; i < 2; i++) {
         //     // if(continueLoop5.filter(value => !value).length >= 220) break;
-        //     console.log(lineBreak,'continueLoop5 false count', continueLoop5.filter(value => !value).length)
+        //     console.log('continueLoop5 false count', continueLoop5.filter(value => !value).length)
         //     currentAdjustment = 0.05;
         //     const currentCurves = getDIA(estimatedBasals, currentAdjustment);
         //     const count = 5
@@ -159,18 +156,15 @@ export async function adjustBasalRates(averageCombinedData) {
         return max;
     }
     function logs() {
-        console.log(lineBreak)
-        const startingBGs = averageCombinedData.map((data) => data.bg);
-        console.log('startingBGs', startingBGs)
-        console.log('averageCombinedData', averageCombinedData)
-        console.log('predictedBGs', predictedBGs)
+        // const startingBGs = averageCombinedData.map((data) => data.bg);
+        // console.log('startingBGs', startingBGs)
+        // console.log('averageCombinedData', averageCombinedData)
+        // console.log('predictedBGs', predictedBGs)
         // console.log('DIACurves', DIACurves)
         console.log('averageDIALength', averageDIALength)
-        
+        // console.log('startingBasalRates', startingBasals)
+        // console.log('estimatedBasals', estimatedBasals)
         console.log('averageBG start', averageBG)
-        console.log('averageBG end', averageBGEnd)
-        console.log('startingBasalRates', startingBasals)
-        console.log('estimatedBasals', estimatedBasals)
         const predictedBGAverage = predictedBGs.reduce((a, b) => a + b) / predictedBGs.length;
         console.log('predictedBGAverage', predictedBGAverage)
         const StartingTotalBasal = sumArray(startingBasals);
@@ -179,6 +173,7 @@ export async function adjustBasalRates(averageCombinedData) {
         console.log('StartingTotalBasal', StartingTotalBasal)
         console.log('EstimatedTotalBasal', EstimatedTotalBasal)
         console.log('TotalBasalChange', TotalBasalChange)
+
 
     }
     function sumArray(arr) {

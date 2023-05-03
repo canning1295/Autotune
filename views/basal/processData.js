@@ -7,14 +7,10 @@ import { getInsulinDelivered } from "../../../calculations/checks.js";
 export async function processData(selectedDate) {
 
     selectedDate.toISOString().slice(0, 10);
-    console.log('selectedDate: ', selectedDate)
     let bgData = await getBGs(selectedDate);
-
-
     let combinedData = [];
     let deliveredBasals = await getTempBasalData(selectedDate);
-    // console.log('deliveredBasals: ', deliveredBasals)
-    console.log('profiles   : ', options.profiles)
+
     for (let i = 0; i < 288; i++) {
         let existingData = await getData("Combined_Data", selectedDate);
         if (existingData) {
@@ -28,11 +24,11 @@ export async function processData(selectedDate) {
         let date = new Date(selectedDate);
         date.setHours(0, 0, 0, 0);
         date.setMinutes(date.getMinutes() + i * 5);
-        const matchingData = bgData.find(data => data.time.getTime() === date.getTime());
+        const matchingData = bgData.find(data => (new Date(data.time)).getTime() === date.getTime());
         if (matchingData) {
             bg = matchingData.bg;
           }
-        if(!matchingData) {console.log('No matching data for: ', date)}
+        // if(!matchingData) {console.log('No matching data for: ', date)}
         startFiveMinWindow = date
         endFiveMinWindow = new Date(startFiveMinWindow.getTime() + 5 * 60000);
         

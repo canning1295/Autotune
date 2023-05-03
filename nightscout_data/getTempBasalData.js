@@ -5,7 +5,7 @@ export async function getTempBasalData(currentDate) {
     const storedData = await getData("Basal_Rates", currentDate);
 
     if (storedData) {
-      console.log("Using stored temp basal data");
+      // console.log("Using stored temp basal data");
       return storedData;
     }
     currentDate = new Date(currentDate);
