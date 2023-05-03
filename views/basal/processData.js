@@ -13,7 +13,7 @@ export async function processData(selectedDate) {
 
     let combinedData = [];
     let deliveredBasals = await getTempBasalData(selectedDate);
-    console.log('deliveredBasals: ', deliveredBasals)
+    // console.log('deliveredBasals: ', deliveredBasals)
     console.log('profiles   : ', options.profiles)
     for (let i = 0; i < 288; i++) {
         let existingData = await getData("Combined_Data", selectedDate);

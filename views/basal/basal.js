@@ -49,30 +49,31 @@ export function loadBasal() {
     document.getElementById("main").innerHTML = htmlCode;
 
     var selectedDates = [];
+    var preventChangeEvent = false; // Add a flag to prevent changeDate event from re-triggering
     $(document).ready(async function () {
         // Initialize datepicker
         $("#datepicker").datepicker({
-        format: "yyyy-mm-dd",
-        autoclose: false,
-        todayHighlight: true,
-        keepOpen: true, // keep calendar open after date selection
-        container: "#datepicker",
-        keyboardNavigation: false,
-        gotoCurrent: true,
-        beforeShowDay: function (date) {
-            for (var i = 0; i < selectedDates.length; i++) {
-                // Check if date is in the selectedDates array
-                if (date.getTime() === selectedDates[i].getTime()) {
-                    return { classes: "selected-date" }; // add selected-date class to selected dates
+            format: "yyyy-mm-dd",
+            autoclose: false,
+            todayHighlight: true,
+            keepOpen: true, // keep calendar open after date selection
+            container: "#datepicker",
+            keyboardNavigation: false,
+            gotoCurrent: true,
+            beforeShowDay: function (date) {
+                for (var i = 0; i < selectedDates.length; i++) {
+                    // Check if date is in the selectedDates array
+                    if (date.getTime() === selectedDates[i].getTime()) {
+                        return { classes: "selected-date" }; // add selected-date class to selected dates
+                    }
                 }
-            }
-            return; // otherwise, do not modify appearance
-        },
-        
+                return; 
+            },
         });
 
         // Add selected date to array and display it on the page
         $("#datepicker").on("changeDate", function (e) {
+            if (preventChangeEvent) return; // Return early if the flag is set
             var selectedDate = e.date;
             if (selectedDate >= new Date(Date.now() - 86400000)) {
                 return;
@@ -87,20 +88,18 @@ export function loadBasal() {
             } else {
                 // Add date to array if not already selected
                 selectedDates.push(selectedDate);
-                // Refresh the date picker to update the appearance of the selected dates
-                $("#datepicker").datepicker('update');
-        
-                // Call updateChart() function without awaiting its completion
                 updateChart(selectedDate);
                 processData(selectedDate)
             }
-            $("#datepicker").datepicker('update');
             
             // Check if there are any selected dates
             if (selectedDates.length > 0) {
-                // Update the datepicker's view to show the month of the last date in the selectedDates array
-                var lastDate = selectedDates[selectedDates.length - 1];
-                $("#datepicker").datepicker('setUTCMonth', lastDate.getUTCMonth(), lastDate.getUTCFullYear());
+                // Refresh the datepicker without changing the month
+                var currentMonth = $(this).datepicker('getDate').getMonth();
+                preventChangeEvent = true; // Set the flag before calling setDate
+                $(this).datepicker('setDate', new Date(selectedDate.getFullYear(), currentMonth, 1));
+                $(this).datepicker('drawMonth');
+                preventChangeEvent = false; // Reset the flag after refreshing the datepicker
             }
         });
         
