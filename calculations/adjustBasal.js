@@ -40,33 +40,34 @@ export async function adjustBasalRates(averageCombinedData) {
             currentAdjustment = insulinNeededPerHour / 12 / 2
             console.log('currentAdjustment', currentAdjustment)
             const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+            console.log('currentCurves', currentCurves)
             const count = 1;
             await estimateBGs(currentCurves, currentAdjustment, count);
         }
-        for (let i = 0; i < 4; i++) {
-            const continueLoop2Filter = continueLoop1.filter(value => !value).length
-            if(continueLoop2Filter >= 220){console.log('false count', continueLoop2Filter); break}
-            currentAdjustment = insulinNeededPerHour / 12 / 4
-            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
-            const count = 2
-            await estimateBGs(currentCurves, currentAdjustment, count);
-        }
-        for (let i = 0; i < 8; i++) {
-            const continueLoop3Filter = continueLoop1.filter(value => !value).length
-            if(continueLoop3Filter >= 220){console.log('false count', continueLoop3Filter); break}
-            currentAdjustment = insulinNeededPerHour / 12 / 8
-            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
-            const count = 3
-            await estimateBGs(currentCurves, currentAdjustment, count);
-        }
-        for (let i = 0; i < 16; i++) {
-            const continueLoop4Filter = continueLoop1.filter(value => !value).length
-            if(continueLoop4Filter >= 220){console.log('false count', continueLoop4Filter); break}
-            currentAdjustment = insulinNeededPerHour / 12 / 10
-            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
-            const count = 4
-            await estimateBGs(currentCurves, currentAdjustment, count);
-        }
+        // for (let i = 0; i < 4; i++) {
+        //     const continueLoop2Filter = continueLoop1.filter(value => !value).length
+        //     if(continueLoop2Filter >= 220){console.log('false count', continueLoop2Filter); break}
+        //     currentAdjustment = insulinNeededPerHour / 12 / 4
+        //     const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+        //     const count = 2
+        //     await estimateBGs(currentCurves, currentAdjustment, count);
+        // }
+        // for (let i = 0; i < 8; i++) {
+        //     const continueLoop3Filter = continueLoop1.filter(value => !value).length
+        //     if(continueLoop3Filter >= 220){console.log('false count', continueLoop3Filter); break}
+        //     currentAdjustment = insulinNeededPerHour / 12 / 8
+        //     const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+        //     const count = 3
+        //     await estimateBGs(currentCurves, currentAdjustment, count);
+        // }
+        // for (let i = 0; i < 16; i++) {
+        //     const continueLoop4Filter = continueLoop1.filter(value => !value).length
+        //     if(continueLoop4Filter >= 220){console.log('false count', continueLoop4Filter); break}
+        //     currentAdjustment = insulinNeededPerHour / 12 / 10
+        //     const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+        //     const count = 4
+        //     await estimateBGs(currentCurves, currentAdjustment, count);
+        // }
         // for (let i = 0; i < 2; i++) {
         //     // if(continueLoop5.filter(value => !value).length >= 220) break;
         //     console.log(lineBreak,'continueLoop5 false count', continueLoop5.filter(value => !value).length)
@@ -115,7 +116,7 @@ export async function adjustBasalRates(averageCombinedData) {
                             for (let m = 0; m < currentCurves[i].length; m++) {
                                 const index = (i + m) % 289;
                                 let previousBG = predictedBGs[index]
-                                const BGChange = currentCurves[i][m] * currentAdjustment * isf;
+                                const BGChange = currentCurves[i][m] * Math.abs(currentAdjustment) * isf;
                                 predictedBGs[index] -= BGChange;
                             }
                             estimatedBasals[i] += currentAdjustment;

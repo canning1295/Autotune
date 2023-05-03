@@ -9,7 +9,7 @@ export function getDIA(netBasals, insulinAdjustment) {
     for (let i = 0; i < 288; i++) {
         insulinDeliveredArr[i] = netBasals[i];
     }
-    let maxIndexArray = new Array(288).fill([]);
+    // let maxIndexArray = new Array(288).fill([]);
     let DIACurves = new Array(288).fill([]);
     for (let i = 0; i < 288; i++) {
         let insulin = 0;
@@ -22,7 +22,7 @@ export function getDIA(netBasals, insulinAdjustment) {
         }
         let GIRCurve = GIR.GIRCurve((insulin + insulinAdjustment) / options.weight);
         // This calculates where the peak of the curve, but / by 20 for the 5 minute intervals
-        maxIndexArray[i] = (GIRCurve.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0)) / 20;
+        // maxIndexArray[i] = (GIRCurve.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0)) / 20;
         let GIRCurvePercents = [];
         let GIRCurveTotal = 0;
         for (let i = 0; i < GIRCurve.length; i++) {
@@ -46,12 +46,15 @@ export function getDIA(netBasals, insulinAdjustment) {
     }
 
     // When adding insulin, the insulin doesn't actually affect the whole day, but rather only impacts BG for the duration of insulin action. Accordingly, at the end of the DIA period, the calculations indicate the 100% of the insulin has been used, so the last BG of that period ends up being much lower (typically) than the next BG. To make it easier to fine tunue insulin adjustments. We add a short period onto the end of the DIACurves. Although this lengthens the DIACurves, thereby making the predictions less aggressive, it still allows for more accurate insulin adjustments.
-    for (let i =0; i < 288; i++) {
-        for(let j = 0; j < maxIndexArray[i].length; j++) {
-            100 - shortenedDIACurves[i].push(shortenedDIACurves[i][j])
-            j += 100 / maxIndexArray[i]
-        }
-    }
+    // console.log('maxIndexArray', maxIndexArray)
+    // for (let i = 0; i < 288; i++) {
+    //     for (let j = 0; j < Math.floor(maxIndexArray[i]);) {
+    //         console.log(maxIndexArray[i]);
+    //         shortenedDIACurves[i].push(Math.floor(100 - shortenedDIACurves[i][j])); 
+    //         j += Math.floor(100 / maxIndexArray[i]); 
+    //     }
+    // }
+    
     return shortenedDIACurves;
 }
 function shortenCurve(i, DIACurves) {
