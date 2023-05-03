@@ -5,21 +5,18 @@ import { showLoadingAnimation, hideLoadingAnimation } from '../../loadingAnimati
 import { adjustBasalRates } from "../../calculations/adjustBasal.js";
 
 export function loadBasal() {
-    // JavaScript code to insert HTML into the "main" div
     var htmlCode =
     /*html*/
     `
         <h2>Adjust Basal Rates</h2>
         <button type="button" class="btn btn-primary" id="selectDatesButton">Select dates</button>
+        <div id="dataTable"></div>
 
         <div class="modal fade" id="dateSelectionModal" tabindex="-1" role="dialog" aria-labelledby="dateSelectionModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dateSelectionModalLabel">Select Dates</h5>
-                        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>-->
                     </div>
                     <div class="modal-body"><p id="instruct1">Please select dates below that you would like to include in the BG average used to calculate your basal rate adjustment calculations.<p>
                         <div class="row">
@@ -102,10 +99,7 @@ export function loadBasal() {
                 preventChangeEvent = false; // Reset the flag after refreshing the datepicker
             }
         });
-        
-        
-        
-        
+
         const selectDatesButton = document.getElementById("selectDatesButton");
         const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
 
@@ -119,7 +113,14 @@ export function loadBasal() {
             // console.log('selectedDates passed in run function: ', selectedDates)
             // let selectedDate = selectedDates[0];
             let AverageCombinedData = await getAverageCombinedData(selectedDates)
-            adjustBasalRates(AverageCombinedData)
+            let Basal = await adjustBasalRates(AverageCombinedData)
+            console.log('Basal: ', Basal)
+            const tempBasal = Basal.tempBasal
+            const adjustedBasal = Basal.adjustedBasal
+            console.log('tempBasal: ', tempBasal)
+            console.log('adjustedBasal: ', adjustedBasal)
+            dateSelectionModal.hide();
+            loadBasalsTable(tempBasal, adjustedBasal)
         });         
     });
 
@@ -134,3 +135,56 @@ export function loadBasal() {
         dateSelectionModal.show();
     });     
 }
+function loadBasalsTable(tempBasal, adjustedBasal) {
+var htmlCode =
+  /*html*/
+  `
+    <h2>Adjust Basal Rates</h2>
+    <button type="button" class="btn btn-primary" id="selectDatesButton">Select dates</button>
+
+    <div class="modal fade" id="dateSelectionModal" tabindex="-1" role="dialog" aria-labelledby="dateSelectionModalLabel" aria-hidden="true">
+      <!-- modal content omitted for brevity -->
+    </div>
+
+    <table id="dataTable" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Temp Basal</th>
+          <th>Adjusted Basal</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  `;
+
+  // Define the columns for the datatable
+const columns = [
+    { title: "Time" },
+    { title: "Temp Basal" },
+    { title: "Adjusted Basal" },
+  ];
+  
+  // Define the data for the datatable
+  const data = [];
+  for (let i = 0; i < 24; i++) {
+    data.push([
+      `${i.toString().padStart(2, '0')}:00`,
+      tempBasal[i] || "",
+      adjustedBasal[i] || "",
+    ]);
+  }
+  
+  // Load the datatable
+//   $(document).ready(function() {
+
+    $('#dataTable').DataTable({
+      data: data,
+      columns: columns,
+      paging: false,
+      searching: false,
+      ordering: false,
+    });
+}
+
+  

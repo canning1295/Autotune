@@ -8,7 +8,7 @@ export async function adjustBasalRates(averageCombinedData) {
     const startingBGs = averageCombinedData.map((data) => data.bg);
     const predictedBGs = averageCombinedData.map((data) => data.bg);
     let startingBasals = averageCombinedData.map((data) => data.actualBasal / 12);
-    let estimatedBasals = averageCombinedData.map((data) => data.actualBasal / 12);
+    let estimatedBasal = averageCombinedData.map((data) => data.actualBasal / 12);
 
     const DIACurves = getDIA(startingBasals, 0);
     const averageDIALength = DIACurves.map((curve) => curve.length).reduce((a, b) => a + b) / DIACurves.length / 12;
@@ -21,7 +21,6 @@ export async function adjustBasalRates(averageCombinedData) {
     
     
     const averageBGEnd = predictedBGs.reduce((a, b) => a + b) / predictedBGs.length;
-
 
     return runCalcs();
 
@@ -37,7 +36,7 @@ export async function adjustBasalRates(averageCombinedData) {
             const continueLoop1Filter = continueLoop1.filter(value => !value).length
             if(continueLoop1Filter >= 220){console.log('false count', continueLoop1Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 2
-            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+            const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 1;
             await estimateBGs(currentCurves, currentAdjustment, count);
         }
@@ -45,7 +44,7 @@ export async function adjustBasalRates(averageCombinedData) {
             const continueLoop2Filter = continueLoop1.filter(value => !value).length
             if(continueLoop2Filter >= 220){console.log('false count', continueLoop2Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 4
-            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+            const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 2
             await estimateBGs(currentCurves, currentAdjustment, count);
         }
@@ -53,7 +52,7 @@ export async function adjustBasalRates(averageCombinedData) {
             const continueLoop3Filter = continueLoop1.filter(value => !value).length
             if(continueLoop3Filter >= 220){console.log('false count', continueLoop3Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 8
-            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+            const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 3
             await estimateBGs(currentCurves, currentAdjustment, count);
         }
@@ -61,7 +60,7 @@ export async function adjustBasalRates(averageCombinedData) {
             const continueLoop4Filter = continueLoop1.filter(value => !value).length
             if(continueLoop4Filter >= 220){console.log('false count', continueLoop4Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 10
-            const currentCurves = getDIA(estimatedBasals, currentAdjustment);
+            const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 4
             await estimateBGs(currentCurves, currentAdjustment, count);
         }
@@ -75,9 +74,29 @@ export async function adjustBasalRates(averageCombinedData) {
         // }
         
         logs()
-        const totalAdditionalInsulin = estimatedBasals.reduce((sum, rate, index) => sum + rate - averageCombinedData[index].actualBasal, 0);
+        const totalAdditionalInsulin = estimatedBasal.reduce((sum, rate, index) => sum + rate - averageCombinedData[index].actualBasal, 0);
+
+        let tempBasal = [];
+        for (let i = 0; i < 24; i++) { 
+            let sum = 0;
+            for (let j = i * 12; j < (i + 1) * 12; j++) { 
+                sum += startingBasals[j];
+            }
+            tempBasal.push(sum.toFixed(2))
+        }
+        let adjustedBasal = [];
+        for (let i = 0; i < 24; i++) { 
+            let sum = 0;
+            for (let j = i * 12; j < (i + 1) * 12; j++) { 
+                sum += estimatedBasal[j];
+            }
+            adjustedBasal.push(sum.toFixed(2))
+        }
+
+        console.log('oldAverages', tempBasal)
+        console.log('newAverages', adjustedBasal)
     
-        return { predictedBGs, estimatedBasals };
+        return { tempBasal, adjustedBasal }
     
         async function estimateBGs(currentCurves, currentAdjustment, count) {
             return new Promise((resolve, reject) => {
@@ -116,7 +135,7 @@ export async function adjustBasalRates(averageCombinedData) {
                                 const BGChange = currentCurves[i][m] * Math.abs(currentAdjustment) * isf;
                                 predictedBGs[index] -= BGChange;
                             }
-                            estimatedBasals[i] += currentAdjustment;
+                            estimatedBasal[i] += currentAdjustment;
                         } 
                         else 
                         {
@@ -155,6 +174,7 @@ export async function adjustBasalRates(averageCombinedData) {
         }
         return max;
     }
+
     function logs() {
         // const startingBGs = averageCombinedData.map((data) => data.bg);
         // console.log('startingBGs', startingBGs)
@@ -163,24 +183,24 @@ export async function adjustBasalRates(averageCombinedData) {
         // console.log('DIACurves', DIACurves)
         console.log('averageDIALength', averageDIALength)
         // console.log('startingBasalRates', startingBasals)
-        // console.log('estimatedBasals', estimatedBasals)
+        console.log('estimatedBasals', estimatedBasal)
         console.log('averageBG start', averageBG)
         const predictedBGAverage = predictedBGs.reduce((a, b) => a + b) / predictedBGs.length;
         console.log('predictedBGAverage', predictedBGAverage)
         const StartingTotalBasal = sumArray(startingBasals);
-        const EstimatedTotalBasal = sumArray(estimatedBasals);
+        const EstimatedTotalBasal = sumArray(estimatedBasal);
         const TotalBasalChange = EstimatedTotalBasal - StartingTotalBasal;
         console.log('StartingTotalBasal', StartingTotalBasal)
         console.log('EstimatedTotalBasal', EstimatedTotalBasal)
         console.log('TotalBasalChange', TotalBasalChange)
-
-
     }
+
     function sumArray(arr) {
         let sum = 0;
         for (let i = 0; i < arr.length; i++) {
           sum += arr[i];
         }
         return sum;
-      }
+    }
+
 }
