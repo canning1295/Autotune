@@ -5,17 +5,16 @@ import { getTempBasalData } from "../../../nightscout_data/getTempBasalData.js";
 import { getInsulinDelivered } from "../../../calculations/checks.js";
 
 export async function processData(selectedDate) {
-    let date = new Date(selectedDate);
+
     selectedDate.toISOString().slice(0, 10);
     console.log('selectedDate: ', selectedDate)
     let bgData = await getBGs(selectedDate);
-    date.setHours(0, 0, 0, 0);
-    console.log('date: ', date, 'bgData: ', bgData)
+
 
     let combinedData = [];
     let deliveredBasals = await getTempBasalData(selectedDate);
     console.log('deliveredBasals: ', deliveredBasals)
-    
+    console.log('profiles   : ', options.profiles)
     for (let i = 0; i < 288; i++) {
         let existingData = await getData("Combined_Data", selectedDate);
         if (existingData) {
@@ -26,15 +25,8 @@ export async function processData(selectedDate) {
         let bg = null;
         let startFiveMinWindow;
         let endFiveMinWindow;
-
-        // if (new Date(bgData[i].time) > date) {
-        //     let prevDate = new Date(selectedDate);
-        //     prevDate.setDate(prevDate.getDate() - 1);
-        //     prevDate.toISOString()
-        //     let prevBGs = await getBGs(prevDate);
-        //     console.log('Could this be triggering the error?', prevBGs)
-        //     bg = prevBGs[prevBGs.length - 1].bg;
-        // }
+        let date = new Date(selectedDate);
+        date.setHours(0, 0, 0, 0);
         date.setMinutes(date.getMinutes() + i * 5);
         const matchingData = bgData.find(data => data.time.getTime() === date.getTime());
         if (matchingData) {
@@ -49,7 +41,7 @@ export async function processData(selectedDate) {
                 new Date(profile.startDate) <= startFiveMinWindow &&
                 new Date(profile.endDate) >= startFiveMinWindow
         );
-        // TODO: Handle case where profile is null
+
         const timeAsSeconds = startFiveMinWindow.getHours() * 3600 + startFiveMinWindow.getMinutes() * 60 + startFiveMinWindow.getSeconds();
         const profileBasal = getValueForTime(profile.basal, timeAsSeconds);
         const carbRatio = getValueForTime(profile.carbRatio, timeAsSeconds);
