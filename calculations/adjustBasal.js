@@ -76,11 +76,15 @@ export async function adjustBasalRates(averageCombinedData) {
         logs()
         const totalAdditionalInsulin = estimatedBasal.reduce((sum, rate, index) => sum + rate - averageCombinedData[index].actualBasal, 0);
 
+        function roundToNearest(num, nearest) {
+            return Math.round(num / nearest) * nearest;
+        }
+        
         let tempBasal = [];
         for (let i = 0; i < 24; i++) { 
             let sum = 0;
             for (let j = i * 12; j < (i + 1) * 12; j++) { 
-                sum += startingBasals[j];
+                sum += roundToNearest(startingBasals[j], 0.05);
             }
             tempBasal.push(sum.toFixed(2))
         }
@@ -88,10 +92,11 @@ export async function adjustBasalRates(averageCombinedData) {
         for (let i = 0; i < 24; i++) { 
             let sum = 0;
             for (let j = i * 12; j < (i + 1) * 12; j++) { 
-                sum += estimatedBasal[j];
+                sum += roundToNearest(estimatedBasal[j], 0.05);
             }
             adjustedBasal.push(sum.toFixed(2))
         }
+        
 
         console.log('oldAverages', tempBasal)
         console.log('newAverages', adjustedBasal)
