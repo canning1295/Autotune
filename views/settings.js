@@ -62,12 +62,25 @@ export function loadSettings() {
                             <input type="number" class="form-control" id="weight" required>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    
+             <div class="modal-footer">
+                <div class="row w-100">
+                    <div class="col-12 text-center mb-2">
                         <p>Click the save button to enable user access to Autotune.</p>
-                        <button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">Delete</button>
-                        <!--<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <button type="button" class="btn btn-danger me-2" id="deleteBtn" style="display: none;">Delete</button>
+                        <!--<button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Close</button>-->
                         <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
                     </div>
+                </div>
+            </div>
+
+                </div>
+                
+                </div>
+                
+                
                 </form>
             </div>
         </div>
@@ -113,7 +126,22 @@ export function loadSettings() {
             document.getElementById('weight').value = '';
             document.getElementById('deleteBtn').style.display = 'none';
         }        
-    
+        // Create a new parent container
+        const tableControls = document.createElement('div');
+        tableControls.className = 'table-controls';
+
+        // Get the #userTable_info and #userTable_paginate elements
+        const userTableInfo = document.getElementById('userTable_info');
+        const userTablePaginate = document.getElementById('userTable_paginate');
+
+        // Move the elements inside the new parent container
+        tableControls.appendChild(userTableInfo);
+        tableControls.appendChild(userTablePaginate);
+
+        // Insert the new parent container after the #userTable element
+        const userTable = document.getElementById('userTable');
+        userTable.parentNode.insertBefore(tableControls, userTable.nextSibling);
+
     });
 
     let currentUser = JSON.parse(localStorage.getItem('autotune_currentUser')) || [];
@@ -206,13 +234,3 @@ export function loadSettings() {
     ])).draw();
     };
 };
-
-// This code defines a function `loadSettings()` that loads the settings page for an application called "Autotune". The settings page allows users to add, edit, and delete user accounts, which consist of a username, URL, ISF, ICR, and weight. It uses the Bootstrap CSS framework and the DataTables.js library (with the Responsive extension) to create and manage a responsive table displaying the user accounts.
-
-// The `loadSettings()` function first sets the `innerHTML` of the element with ID 'main' to the settings page HTML code. It then reads the saved user accounts from the browser's local storage, initializes the DataTables.js library, and populates the table with the saved user accounts.
-
-// Event listeners are added for various interactions on the page, such as adding a new user, selecting a user from the table, and saving or deleting a user. When a user is saved, the user account data is saved to local storage, and the table is updated. When a user is deleted, the user account data is removed from local storage, and the table is updated accordingly.
-
-// The `populateTable()` function takes an array of user accounts and populates the DataTables.js table with the data. The `setCurrentUser()` function is imported from another module and sets the current user in the application.
-
-// Overall, this code provides a functional settings page for managing user accounts in an Autotune application.

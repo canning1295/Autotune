@@ -46,7 +46,7 @@ export async function adjustBasalRates(averageCombinedData) {
             const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 1;
             await raiseBGValues(currentCurves, currentAdjustment, count);
-            console.log(i, 'of 20')
+            // console.log(i, 'of 20')
         }
         // for (let i = 0; i < 4; i++) {
         //     const continueLoop2Filter = continueLoop1.filter(value => !value).length
@@ -89,7 +89,7 @@ export async function adjustBasalRates(averageCombinedData) {
             const count = 2
             await lowerBGValues(currentCurves, currentAdjustment, count);
         }
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 16; i++) {
             const continueLoop3Filter = continueLoop6.filter(value => !value).length
             if(continueLoop3Filter >= 220){console.log('false count', continueLoop3Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 8
@@ -137,10 +137,6 @@ export async function adjustBasalRates(averageCombinedData) {
             }
             adjustedBasal.push(sum.toFixed(2))
         }
-        
-
-        console.log('oldAverages', tempBasal)
-        console.log('newAverages', adjustedBasal)
     
         return { tempBasal, adjustedBasal }
     

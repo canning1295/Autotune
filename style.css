@@ -1,178 +1,403 @@
-/* 
+@media (max-width: 480px) {
+	/* 
+	BEGIN CSS FOR BODY
+	*/
+		body, html {
+			height: 100%;
+			margin: 0;
+		}
+		/* 
+	BEGIN CSS FOR MAIN
+	*/
+		#main {
+			Width: 100%;
+			height: 90%;
+			text-align: center;
+			background-color: white;
+			display: flex;
+			flex-direction: column;
+			overflow-y: auto;
+			/* align-items: center; */
+			}
+	/* 
+	BEGIN CSS FOR BASAL
+	*/
+		.selected-date {
+			background-color: #007bff !important;
+			color: white !important;
+		}
+
+			/* Adjust the size of the datepicker container */
+		.datepicker {
+			width: 75%;
+			margin: 0 auto; /* Center the datepicker */
+			}
+			
+			/* Adjust the size of the calendar table */
+			.datepicker table {
+			width: 100%;
+			}
+			
+			/* Add borders around the date cells */
+			.datepicker-days td.day {
+			border: 1px solid #ccc;
+			padding: 8px; /* Increase padding to make dates bigger */
+			}
+			
+	/* 
+	BEGIN CSS FOR SETTINGS
+	*/
+		#add-user {
+			margin-top: 20px;
+		}
+
+		#userTable thead th {
+			text-align: center;
+		}
+	/* 
+	BEGIN CSS FOR FOOTER/MENU
+	*/
+		#footer {
+			display: flex;
+			justify-content: space-evenly;
+			align-items: center;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 10%;
+			background-color: #fff;
+			box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+			background-color: rgb(33, 33, 33);
+			}
+			
+			.menu-button {
+			height: 45px;
+			width: 45px;
+			border-radius: 5px;
+			box-shadow: 3px;
+			}
+
+			.icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 25px;
+			height: 25px;
+			}
+	/*
+	BEGIN CSS FOR LOADING ANIMATION
+	*/
+		#loading-container {
+			display: none; /* hide the container by default */
+		}
+
+		#loading-container.show {
+			display: flex; /* show the container when the "show" class is added */
+		}
+
+		.center {
+			height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: #000;
+		}
+
+		.wave {
+			width: 5px;
+			height: 100px;
+			background: linear-gradient(45deg, cyan, #fff);
+			margin: 10px;
+			animation: wave 1s linear infinite;
+			border-radius: 20px;
+		}
+
+		.wave:nth-child(2) {
+			animation-delay: 0.1s;
+		}
+
+		.wave:nth-child(3) {
+			animation-delay: 0.2s;
+		}
+
+		.wave:nth-child(4) {
+			animation-delay: 0.3s;
+		}
+
+		.wave:nth-child(5) {
+			animation-delay: 0.4s;
+		}
+
+		.wave:nth-child(6) {
+			animation-delay: 0.5s;
+		}
+
+		.wave:nth-child(7) {
+			animation-delay: 0.6s;
+		}
+
+		.wave:nth-child(8) {
+			animation-delay: 0.7s;
+		}
+
+		.wave:nth-child(9) {
+			animation-delay: 0.8s;
+		}
+
+		.wave:nth-child(10) {
+			animation-delay: 0.9s;
+		}
+
+		@keyframes wave {
+			0% {
+			transform: scale(0);
+			}
+
+			50% {
+			transform: scale(1);
+			}
+
+			100% {
+			transform: scale(0);
+			}
+		}
+		.overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 9999; /* make sure the overlay is on top of other elements */
+		}
+}
+
+/* ------------------------BEGIN DESKTOP STYLING----------------------- */
+	/* 
+	BEGIN CSS FOR BODY
+	*/
+	body, html {
+		height: 100%;
+		margin: 0;
+	}
+	/* 
 BEGIN CSS FOR MAIN
 */
-#main {
-    Width: 100%;
-    height: 90%;
-    text-align: center;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-  }
+	#main {
+		Width: 100%;
+		height: 90%;
+		text-align: center;
+		background-color: white;
+		display: flex;
+		flex-direction: column;
+		overflow-y: auto;
+		/* align-items: center; */
+		}
 /* 
 BEGIN CSS FOR BASAL
 */
-.selected-date {
-  background-color: #007bff !important;
-  color: white !important;
-}
+	#selectDatesButton {
+		margin-top: 20px;
+		margin-bottom: 20px;
+		max-width: 50%;
+	}
+	#dataTable {
+		max-width: 30%;
+	}
 
-  /* Adjust the size of the datepicker container */
-.datepicker {
-    width: 75%;
-    margin: 0 auto; /* Center the datepicker */
-  }
-  
-  /* Adjust the size of the calendar table */
-  .datepicker table {
-    width: 100%;
-  }
-  
-  /* Add borders around the date cells */
-  .datepicker-days td.day {
-    border: 1px solid #ccc;
-    padding: 8px; /* Increase padding to make dates bigger */
-  }
-  
+	#dataTable_info {
+		display: none;
+	}
+
+	.selected-date {
+		background-color: #007bff !important;
+		color: white !important;
+	}
+
+	/* Adjust the size of the datepicker container */
+	.datepicker {
+		width: 75%;
+		margin: 0 auto; /* Center the datepicker */
+	}
+	
+	/* Adjust the size of the calendar table */
+	.datepicker table {
+		width: 100%;
+	}
+	
+	/* Add borders around the date cells */
+	.datepicker-days td.day {
+		border: 1px solid #ccc;
+		padding: 8px; /* Increase padding to make dates bigger */
+	}
+	#datepicker-container {
+		max-width: 90%;
+		margin: 0 auto;
+	}
+	
+	.form-check-input {
+		margin-right: 0px;
+	}
 /* 
 BEGIN CSS FOR SETTINGS
 */
-#add-user {
-    margin-top: 20px;
-}
+	#add-user {
+		margin-top: 20px;
+	}
 
-#userTable thead th {
-  text-align: center;
-}
+	#userTable thead th {
+		text-align: center;
+	}
+
+	#current-user-select {
+		width: 35%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	#userTable_info {
+		margin-left: 45%;
+		margin-right: 0px; 
+	}
+
+	#userTable {
+		max-width: 35%;
+	}
+	
+	/* Center the child elements of .table-controls horizontally */
+	.table-controls {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 10px;
+	}
+	  
+	.table-controls > div {
+		display: inline-block;
+	}
+	  
+	#userTable_wrapper .dataTables_paginate,
+	#userTable_wrapper .dataTables_info {
+		padding: 0;
+		margin: 0;
+	}
+
+
 /* 
 BEGIN CSS FOR FOOTER/MENU
 */
-#footer {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 10%;
-    background-color: #fff;
-    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-    background-color: rgb(33, 33, 33);
-  }
-  
-  .menu-button {
-    height: 45px;
-    width: 45px;
-    border-radius: 5px;
-    box-shadow: 3px;
-  }
+	#footer {
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 10%;
+		background-color: #fff;
+		box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+		background-color: rgb(33, 33, 33);
+		}
+		
+		.menu-button {
+		height: 45px;
+		width: 45px;
+		border-radius: 5px;
+		box-shadow: 3px;
+		}
 
-  .icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 25px;
-    height: 25px;
-  }
-  /*
+		.icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 25px;
+		height: 25px;
+		}
+/*
 BEGIN CSS FOR LOADING ANIMATION
 */
-#loading-container {
-  display: none; /* hide the container by default */
-}
+	#loading-container {
+		display: none; /* hide the container by default */
+	}
 
-#loading-container.show {
-  display: flex; /* show the container when the "show" class is added */
-}
+	#loading-container.show {
+		display: flex; /* show the container when the "show" class is added */
+	}
 
-.center {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #000;
-}
+	.center {
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: #000;
+	}
 
-.wave {
-  width: 5px;
-  height: 100px;
-  background: linear-gradient(45deg, cyan, #fff);
-  margin: 10px;
-  animation: wave 1s linear infinite;
-  border-radius: 20px;
-}
+	.wave {
+		width: 5px;
+		height: 100px;
+		background: linear-gradient(45deg, cyan, #fff);
+		margin: 10px;
+		animation: wave 1s linear infinite;
+		border-radius: 20px;
+	}
 
-.wave:nth-child(2) {
-  animation-delay: 0.1s;
-}
+	.wave:nth-child(2) {
+		animation-delay: 0.1s;
+	}
 
-.wave:nth-child(3) {
-  animation-delay: 0.2s;
-}
+	.wave:nth-child(3) {
+		animation-delay: 0.2s;
+	}
 
-.wave:nth-child(4) {
-  animation-delay: 0.3s;
-}
+	.wave:nth-child(4) {
+		animation-delay: 0.3s;
+	}
 
-.wave:nth-child(5) {
-  animation-delay: 0.4s;
-}
+	.wave:nth-child(5) {
+		animation-delay: 0.4s;
+	}
 
-.wave:nth-child(6) {
-  animation-delay: 0.5s;
-}
+	.wave:nth-child(6) {
+		animation-delay: 0.5s;
+	}
 
-.wave:nth-child(7) {
-  animation-delay: 0.6s;
-}
+	.wave:nth-child(7) {
+		animation-delay: 0.6s;
+	}
 
-.wave:nth-child(8) {
-  animation-delay: 0.7s;
-}
+	.wave:nth-child(8) {
+		animation-delay: 0.7s;
+	}
 
-.wave:nth-child(9) {
-  animation-delay: 0.8s;
-}
+	.wave:nth-child(9) {
+		animation-delay: 0.8s;
+	}
 
-.wave:nth-child(10) {
-  animation-delay: 0.9s;
-}
+	.wave:nth-child(10) {
+		animation-delay: 0.9s;
+	}
 
-@keyframes wave {
-  0% {
-    transform: scale(0);
-  }
+	@keyframes wave {
+		0% {
+		transform: scale(0);
+		}
 
-  50% {
-    transform: scale(1);
-  }
+		50% {
+		transform: scale(1);
+		}
 
-  100% {
-    transform: scale(0);
-  }
-}
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999; /* make sure the overlay is on top of other elements */
-}
-
-body, html {
-  height: 100%;
-  margin: 0;
-}
-
-#main {
-  height: 90%;
-  overflow-y: auto;
-}
-
-#footer {
-  height: 10%;
-}
+		100% {
+		transform: scale(0);
+		}
+	}
+	.overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.5);
+		z-index: 9999; /* make sure the overlay is on top of other elements */
+	}

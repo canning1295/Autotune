@@ -8,34 +8,37 @@ export function loadBasal() {
     var htmlCode =
     /*html*/
     `
-        <h2>Adjust Basal Rates</h2>
-        <button type="button" class="btn btn-primary" id="selectDatesButton">Select dates</button>
-        <table id="dataTable"></table>
-
+        <div>
+            <h2>Adjust Basal Rates</h2>
+            <button type="button" class="btn btn-primary" id="selectDatesButton">Select dates</button>
+            <table id="dataTable"></table>
+        </div>
         <div class="modal fade" id="dateSelectionModal" tabindex="-1" role="dialog" aria-labelledby="dateSelectionModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dateSelectionModalLabel">Select Dates</h5>
                     </div>
-                    <div class="modal-body"><p id="instruct1">Please select dates below that you would like to include in the BG average used to calculate your basal rate adjustment calculations.<p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div id="chartContainer">
-                                    <canvas id="myChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div id="calendarContainer">
-                                    <div id="datepicker" class="form-control"></div>
-                                    <div class="form-check mt-3">
-                                        <input class="form-check-input" type="checkbox" value="" id="includeTempBasal" checked />
-                                        <label class="form-check-label" for="includeTempBasal">Include temp basal delivery in calculations</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="modal-body">
+    <p id="instruct1">Please select dates below that you would like to include in the BG average used to calculate your basal rate adjustment calculations.</p>
+    <div class="row">
+        <div class="col-12">
+            <div id="chartContainer" class="mb-4">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+        <div class="col-12">
+            <div id="datepicker-container" class="mx-auto mb-3">
+                <div id="datepicker" class="form-control"></div>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" id="includeTempBasal" checked />
+                <label class="form-check-label" for="includeTempBasal">Include temp basal delivery in calculations</label>
+            </div>
+        </div>
+    </div>
+</div>
+
                     <div class="modal-footer">
                         <button type="button" id="calculate-basals" class="btn btn-primary" data-dismiss="modal">Run</button>
                     </div>
@@ -143,9 +146,9 @@ export function loadBasal() {
 function initDataTable() {
     // Define the columns for the datatable
     const columns = [
-      { title: "Time" },
-      { title: "Temp Basal" },
-      { title: "Adjusted Basal" },
+      { title: "Time", className: "text-center"  },
+      { title: "Temp Basal", className: "text-center" },
+      { title: "Adjusted Basal", className: "text-center" },
     ];
   
     // Load the datatable
@@ -172,8 +175,8 @@ var htmlCode =
       <thead>
         <tr>
           <th>Time</th>
-          <th>Temp Basal</th>
-          <th>Adjusted Basal</th>
+          <th>Temp Basal&shy;(U/hr)</th>
+          <th>Adjusted Basal&shy;(U/hr)</th>
         </tr>
       </thead>
       <tbody></tbody>
