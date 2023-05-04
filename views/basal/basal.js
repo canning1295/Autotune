@@ -1,10 +1,127 @@
 import { updateChart } from "./updateChart.js";
 import { processData } from "./processData.js";
 import { getAverageCombinedData } from "./createAvgCombinedData.js";
-import { showLoadingAnimation, hideLoadingAnimation } from '../../loadingAnimation.js';
 import { adjustBasalRates } from "../../calculations/adjustBasal.js";
 
 export function loadBasal() {
+    const htmlLoader = 
+    /*html*/
+    `
+        <div class="loader">
+            <div class="loader-inner">
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .loader {
+            background: #000;
+            background: radial-gradient(#222, #000);
+            bottom: 0;
+            left: 0;
+            overflow: hidden;
+            position: fixed;
+            right: 0;
+            top: 0;
+            z-index: 99999;
+        }
+
+        .loader-inner {
+            bottom: 0;
+            height: 60px;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100px;
+        }
+
+        .loader-line-wrap {
+            animation: 
+                spin 2000ms cubic-bezier(.175, .885, .32, 1.275) infinite
+            ;
+            box-sizing: border-box;
+            height: 50px;
+            left: 0;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            transform-origin: 50% 100%;
+            width: 100px;
+        }
+        .loader-line {
+            border: 4px solid transparent;
+            border-radius: 100%;
+            box-sizing: border-box;
+            height: 100px;
+            left: 0;
+            margin: 0 auto;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100px;
+        }
+        .loader-line-wrap:nth-child(1) { animation-delay: -50ms; }
+        .loader-line-wrap:nth-child(2) { animation-delay: -100ms; }
+        .loader-line-wrap:nth-child(3) { animation-delay: -150ms; }
+        .loader-line-wrap:nth-child(4) { animation-delay: -200ms; }
+        .loader-line-wrap:nth-child(5) { animation-delay: -250ms; }
+
+        .loader-line-wrap:nth-child(1) .loader-line {
+            border-color: hsl(0, 80%, 60%);
+            height: 90px;
+            width: 90px;
+            top: 7px;
+        }
+        .loader-line-wrap:nth-child(2) .loader-line {
+            border-color: hsl(60, 80%, 60%);
+            height: 76px;
+            width: 76px;
+            top: 14px;
+        }
+        .loader-line-wrap:nth-child(3) .loader-line {
+            border-color: hsl(120, 80%, 60%);
+            height: 62px;
+            width: 62px;
+            top: 21px;
+        }
+        .loader-line-wrap:nth-child(4) .loader-line {
+            border-color: hsl(180, 80%, 60%);
+            height: 48px;
+            width: 48px;
+            top: 28px;
+        }
+        .loader-line-wrap:nth-child(5) .loader-line {
+            border-color: hsl(240, 80%, 60%);
+            height: 34px;
+            width: 34px;
+            top: 35px;
+        }
+
+        @keyframes spin {
+            0%, 15% {
+                transform: rotate(0);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        </style>
+    `;
     var htmlCode =
     /*html*/
     `
@@ -47,7 +164,7 @@ export function loadBasal() {
         </div>
     `;
     document.getElementById("main").innerHTML = htmlCode;
-
+    const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
     var selectedDates = [];
     var preventChangeEvent = false; // Add a flag to prevent changeDate event from re-triggering
     $(document).ready(async function () {
@@ -112,24 +229,69 @@ export function loadBasal() {
 
         // Add event listener to the "Run" button
         document.getElementById("calculate-basals").addEventListener("click", async () => {
-            if(selectedDates.length < 2) {alert('Please select at least 2 dates to run the basal rate adjustment calculations.'); return;}
-            // console.log('selectedDates passed in run function: ', selectedDates)
-            // let selectedDate = selectedDates[0];
-            let AverageCombinedData = await getAverageCombinedData(selectedDates)
-            let Basal = await adjustBasalRates(AverageCombinedData)
-            console.log('Basal: ', Basal)
-            const tempBasal = Basal.tempBasal
-            const adjustedBasal = Basal.adjustedBasal
-            console.log('tempBasal: ', tempBasal)
-            console.log('adjustedBasal: ', adjustedBasal)
-            dateSelectionModal.hide();
-            loadBasalsTable(tempBasal, adjustedBasal)
-        });         
+            if(selectedDates.length < 2) {
+                alert('Please select at least 2 dates to run the basal rate adjustment calculations.'); 
+                return;
+            }
+            // Show the loading animation
+            showLoadingAnimation();
+        
+            // Execute the code for adjusting basal rates
+            let AverageCombinedData = await getAverageCombinedData(selectedDates);
+            let Basal = await adjustBasalRates(AverageCombinedData);
+            const tempBasal = Basal.tempBasal;
+            const adjustedBasal = Basal.adjustedBasal;
+        
+            // Hide the loading animation and display the basal table
+            hideLoadingAnimation();
+            hideModal('dateSelectionModal')
+            loadBasalsTable(tempBasal, adjustedBasal);
+        }); 
+              
     });
+    function hideModal(modalElementId) {
+        const modalElement = document.getElementById(modalElementId);
+        const backdrop = document.querySelector(".modal-backdrop");
+      
+        if (modalElement) {
+          modalElement.classList.remove("show");
+          modalElement.style.display = "none";
+          modalElement.setAttribute("aria-hidden", "true");
+      
+          if (backdrop) {
+            backdrop.parentNode.removeChild(backdrop);
+          }
+      
+          // Remove 'modal-open' class from the body
+          document.body.classList.remove("modal-open");
+        } else {
+          console.error(`Element with ID '${modalElementId}' not found.`);
+        }
+      }
+      
 
+    function showLoadingAnimation() {
+        // Create a new div to show the loading animation
+        const loaderDiv = document.createElement('div');
+        loaderDiv.innerHTML = htmlLoader;
+        document.body.appendChild(loaderDiv);
     
-    const selectDatesButton = document.getElementById("selectDatesButton");
-    const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
+        // Disable the background
+        const mainDiv = document.getElementById('main');
+        mainDiv.classList.add('disabled');
+    }
+    
+    function hideLoadingAnimation() {
+        // Remove the loader div
+        const loaderDiv = document.querySelector('.loader');
+        if (loaderDiv) {
+            loaderDiv.parentNode.removeChild(loaderDiv);
+        }
+    
+        // Enable the background
+        const mainDiv = document.getElementById('main');
+        mainDiv.classList.remove('disabled');
+    }
     
     // Show the modal automatically when the page loads
     dateSelectionModal.show();
