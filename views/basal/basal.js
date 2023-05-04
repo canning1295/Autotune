@@ -10,7 +10,7 @@ export function loadBasal() {
     `
         <h2>Adjust Basal Rates</h2>
         <button type="button" class="btn btn-primary" id="selectDatesButton">Select dates</button>
-        <div id="dataTable"></div>
+        <table id="dataTable"></table>
 
         <div class="modal fade" id="dateSelectionModal" tabindex="-1" role="dialog" aria-labelledby="dateSelectionModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -134,7 +134,29 @@ export function loadBasal() {
     selectDatesButton.addEventListener("click", () => {
         dateSelectionModal.show();
     });     
+      // Initialize the datatable
+      initDataTable();
+
+      // Call the loadBasalsTable function with empty arrays as arguments
+      loadBasalsTable([], []);
 }
+function initDataTable() {
+    // Define the columns for the datatable
+    const columns = [
+      { title: "Time" },
+      { title: "Temp Basal" },
+      { title: "Adjusted Basal" },
+    ];
+  
+    // Load the datatable
+    $('#dataTable').DataTable({
+      data: [],
+      columns: columns,
+      paging: false,
+      searching: false,
+      ordering: false,
+    });
+  }
 function loadBasalsTable(tempBasal, adjustedBasal) {
 var htmlCode =
   /*html*/
@@ -174,17 +196,13 @@ const columns = [
       adjustedBasal[i] || "",
     ]);
   }
-  
-  // Load the datatable
-//   $(document).ready(function() {
 
-    $('#dataTable').DataTable({
-      data: data,
-      columns: columns,
-      paging: false,
-      searching: false,
-      ordering: false,
-    });
+  // Update the datatable with new data
+  const dataTable = $('#dataTable').DataTable();
+  dataTable.clear();
+  dataTable.rows.add(data);
+  dataTable.draw();
+
 }
 
   

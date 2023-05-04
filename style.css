@@ -163,4 +163,16 @@ BEGIN CSS FOR LOADING ANIMATION
   z-index: 9999; /* make sure the overlay is on top of other elements */
 }
 
+body, html {
+  height: 100%;
+  margin: 0;
+}
 
+#main {
+  height: 90%;
+  overflow-y: auto;
+}
+
+#footer {
+  height: 10%;
+}
