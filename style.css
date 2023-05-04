@@ -1,4 +1,4 @@
-@media (max-width: 480px) {
+@media (max-width: 500px) {
 	/* 
 	BEGIN CSS FOR BODY
 	*/
@@ -53,6 +53,22 @@
 
 		#userTable thead th {
 			text-align: center;
+		}
+
+	
+		#current-user-select {
+			width: 65%;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	
+		#userTable_info {
+			margin-left: 65%;
+			margin-right: 0px; 
+		}
+	
+		#userTable {
+			max-width: 65%;
 		}
 	/* 
 	BEGIN CSS FOR FOOTER/MENU
@@ -251,14 +267,13 @@ BEGIN CSS FOR SETTINGS
 	}
 
 	#current-user-select {
-		width: 35%;
+		width: 60%;
 		margin-left: auto;
 		margin-right: auto;
 	}
 
 	#userTable_info {
-		margin-left: 45%;
-		margin-right: 0px; 
+		display: none;
 	}
 
 	#userTable {
