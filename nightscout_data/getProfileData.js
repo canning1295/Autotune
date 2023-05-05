@@ -67,11 +67,3 @@ function getSize(obj) {
 		) / 10
 	)
 }
-
-// Summary for getProfileData.js:
-
-// Imports saveData, getData, and getTimestamp functions from "../localDatabase.js" and options object from "../index.js".
-// Initializes profileData as undefined.
-// Defines and exports getUserProfiles function, which retrieves user profiles from the local database. If the profiles don't exist or are older than yesterday at 12:00 am, it fetches the profiles from Nightscout API and saves them to the database. The function returns the profiles.
-// Defines and exports setProfiles function, which takes profileData as input and constructs an array of profiles containing information such as startDate, endDate, basal, carbRatio, isf, lowTarget, and highTarget. The function then saves the profiles to the local database with a timestamp of yesterday's date.
-// Defines getSize function, which calculates the size of a JSON object in kilobytes. 

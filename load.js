@@ -64,8 +64,8 @@ export async function setCurrentUser(userArray) {
     if (currentUser) {
         options.user = currentUser.username;
         options.url = currentUser.url;
-        options.isf = currentUser.isf;
-        options.icr = currentUser.icr;
+        options.targetBG = currentUser.targetBG;
+        options.lowTargetBG = currentUser.lowTargetBG;
         options.weight = currentUser.weight;
         closeDB()
         await initializeDB()

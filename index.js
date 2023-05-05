@@ -3,7 +3,6 @@ import { loadSettings } from "./views/settings.js";
 
 export const options = {
 	url: "",
-	ISF: NaN,
 	weight: NaN,
 	user: "",
 	profiles: [],

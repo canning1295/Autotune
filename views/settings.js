@@ -20,8 +20,8 @@ export function loadSettings() {
                         <tr>
                         <th data-priority="1">Username</th>
                         <th data-priority="2">URL</th>
-                        <th data-priority="3">ISF</th>
-                        <th data-priority="4">ICR</th>
+                        <th data-priority="3">Target BG</th>
+                        <th data-priority="4">Low Target BG</th>
                         <th data-priority="5">Weight</th>
                         </tr>
                     </thead>
@@ -50,12 +50,12 @@ export function loadSettings() {
                                 <input type="text" placeholder="https://yoursite.com" class="form-control" id="url" required>
                             </div>
                             <div class="mb-3">
-                                <label for="isf" class="form-label">ISF</label>
-                                <input type="number" class="form-control" id="isf" required>
+                                <label for="targetBG" class="form-label">Target BG</label>
+                                <input type="number" class="form-control" id="targetBG" required>
                             </div>
                             <div class="mb-3">
-                                <label for="icr" class="form-label">ICR</label>
-                                <input type="number" class="form-control" id="icr" required>
+                                <label for="lowTargetBG" class="form-label">Low Target BG</label>
+                                <input type="number" class="form-control" id="lowTargetBG" required>
                             </div>
                             <div class="mb-3">
                             <label for="weight" class="form-label">Weight in kg</label>
@@ -121,8 +121,8 @@ export function loadSettings() {
         function clearUserForm() {
             document.getElementById('username').value = '';
             document.getElementById('url').value = '';
-            document.getElementById('isf').value = '';
-            document.getElementById('icr').value = '';
+            document.getElementById('targetBG').value = '';
+            document.getElementById('lowTargetBG').value = '';
             document.getElementById('weight').value = '';
             document.getElementById('deleteBtn').style.display = 'none';
         }        
@@ -166,8 +166,8 @@ export function loadSettings() {
             
             if (currentUser) {
                 tableData[1] = currentUser.url;
-                tableData[2] = currentUser.isf;
-                tableData[3] = currentUser.icr;
+                tableData[2] = currentUser.targetBG;
+                tableData[3] = currentUser.lowTargetBG;
                 tableData[4] = currentUser.weight;
             } else {
                 console.log('User not found');
@@ -176,8 +176,8 @@ export function loadSettings() {
             // Save the current user to local storage
             document.getElementById('username').value = currentUser.username;
             document.getElementById('url').value = currentUser.url;
-            document.getElementById('isf').value = currentUser.isf;
-            document.getElementById('icr').value = currentUser.icr;
+            document.getElementById('targetBG').value = currentUser.targetBG;
+            document.getElementById('lowTargetBG').value = currentUser.lowTargetBG;
             document.getElementById('weight').value = currentUser.weight;
             document.getElementById('deleteBtn').style.display = 'block';
             // localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
@@ -193,14 +193,14 @@ export function loadSettings() {
         e.preventDefault();
         const username = document.getElementById('username').value;
         const url = document.getElementById('url').value;
-        const isf = document.getElementById('isf').value;
-        const icr = document.getElementById('icr').value;
+        const targetBG = document.getElementById('targetBG').value;
+        const lowTargetBG = document.getElementById('lowTargetBG').value;
         const weight = document.getElementById('weight').value;
         users = users.filter((user) => user.username !== username);
 
-        users.push({ username, url, isf, icr, weight });
+        users.push({ username, url, targetBG, lowTargetBG, weight });
         localStorage.setItem('autotune_users', JSON.stringify(users));
-        let currentUser = { username, url, isf, icr, weight}
+        let currentUser = { username, url, targetBG, lowTargetBG, weight}
         // console.log('currentUser:', currentUser)
         setCurrentUser(currentUser);
         //   localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
@@ -228,8 +228,8 @@ export function loadSettings() {
     dataTable.clear().rows.add(users.map(user => [
         user.username,
         user.url,
-        user.isf,
-        user.icr,
+        user.targetBG,
+        user.lowTargetBG,
         user.weight
     ])).draw();
     };
