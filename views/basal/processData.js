@@ -3,6 +3,7 @@ import { getData, saveData } from "../../../localDatabase.js";
 import { options } from "../../../index.js";
 import { getTempBasalData } from "../../../nightscout_data/getTempBasalData.js";
 import { getInsulinDelivered } from "../../../calculations/checks.js";
+import { getAllBoluses } from "../../nightscout_data/getBolusData.js";
 
 export async function processData(selectedDate) {
 
@@ -10,6 +11,9 @@ export async function processData(selectedDate) {
     let bgData = await getBGs(selectedDate);
     let combinedData = [];
     let deliveredBasals = await getTempBasalData(selectedDate);
+    let bolusData = await getAllBoluses(selectedDate);
+    console.log('boluses: ', boluses)
+    bolusWindows = getInsulinDataByTimeWindow(bolusData, selectedDate, options. bolusTimeWindow)
 
     for (let i = 0; i < 288; i++) {
         let existingData = await getData("Combined_Data", selectedDate);
@@ -109,4 +113,33 @@ export async function processData(selectedDate) {
         return value;
     }
     
+    function getInsulinDataByTimeWindow(bolusData, selectedDate, timeWindow) {
+        if (![1, 2, 3, 4, 6, 8].includes(timeWindow)) {
+          throw new Error('Invalid time window');
+        }
+      
+        const result = [];
+        const date = new Date(selectedDate);
+      
+        for (let i = 0; i < 24; i += timeWindow) {
+          const startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), i);
+          const endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), i + timeWindow);
+          let insulin = 0;
+      
+          for (let j = 0; j < bolusData.length; j++) {
+            const bolus = bolusData[j];
+            const bolusTime = new Date(bolus.timestamp);
+      
+            if (bolusTime >= startTime && bolusTime < endTime) {
+              insulin += bolus.insulin;
+            }
+          }
+      
+          result.push(insulin);
+        }
+      
+        return result;
+      }
+      
+      
 }
