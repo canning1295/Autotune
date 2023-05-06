@@ -29,7 +29,7 @@ export async function getAllBoluses(currentDate) {
 		"&find[eventType]=Carb+Correction",
 		"&count=1000000"
 	)
-	console.log("Grabbing Bolus Data from Nightscout...", carbCorrectionUrl)
+	console.log("Grabbing Meal Bolus Data from Nightscout...", carbCorrectionUrl)
 	const response1 = await fetch(carbCorrectionUrl)
 	const carbCorrectionJSON = (await response1.json()).reverse()
 
@@ -42,7 +42,7 @@ export async function getAllBoluses(currentDate) {
 		"&find[eventType]=Correction+Bolus"
 	)
 	console.log(
-		"Grabbing Bolus Data from Nightscout...", bolusUrl)
+		"Grabbing Correction Bolus Data from Nightscout...", bolusUrl)
 	const response2 = await fetch(bolusUrl)
 	const bolusJSON = (await response2.json()).reverse()
 

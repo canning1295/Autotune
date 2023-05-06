@@ -7,10 +7,10 @@ export const options = {
 	user: "",
 	profiles: [],
 	targetBG: NaN,
-	poolingTime: 180,
+	poolingTime: 120,
 	lowTargetBG: 80,
 	targetBG: 100,
-	bolusTimeWindow: 3,
+	bolusTimeWindow: 1,
 	// bolusTimeWindow adds up how much bolus insulin was delivered every X hours (accept 1,2,3,4,6,8)
 };
 

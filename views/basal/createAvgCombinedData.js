@@ -18,6 +18,7 @@ export async function getAverageCombinedData(selectedDates) {
       let sumBg = 0;
       let sumProfileBasal = 0;
       let sumActualBasal = 0;
+      let sumBolusInsulin = 0;
       let sumCarbRatio = 0;
       let sumHighTarget = 0;
       let sumIsf = 0;
@@ -29,6 +30,7 @@ export async function getAverageCombinedData(selectedDates) {
           sumBg += allCombinedData[j][i].bg;
           sumProfileBasal += allCombinedData[j][i].profileBasal;
           sumActualBasal += allCombinedData[j][i].actualBasal;
+          sumBolusInsulin += allCombinedData[j][i].bolusInsulin;
           sumCarbRatio += allCombinedData[j][i].carbRatio;
           sumHighTarget += allCombinedData[j][i].highTarget;
           sumIsf += allCombinedData[j][i].isf;
@@ -41,6 +43,7 @@ export async function getAverageCombinedData(selectedDates) {
       let avgBg = sumBg / count;
       let avgProfileBasal = sumProfileBasal / count;
       let avgActualBasal = sumActualBasal / count;
+      let avgBolusInsulin = sumBolusInsulin / count;
       let avgCarbRatio = sumCarbRatio / count;
       let avgHighTarget = sumHighTarget / count;
       let avgIsf = sumIsf / count;
@@ -56,6 +59,7 @@ export async function getAverageCombinedData(selectedDates) {
         bg: avgBg,
         profileBasal: avgProfileBasal,
         actualBasal: avgActualBasal,
+        bolusInsulin: avgBolusInsulin,
         carbRatio: avgCarbRatio,
         highTarget: avgHighTarget,
         isf: avgIsf,
