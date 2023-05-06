@@ -14,7 +14,6 @@ export async function processData(selectedDate) {
     let bolusData = await getAllBoluses(selectedDate);
     // console.log('boluses: ', boluses)
     let bolusWindows = getInsulinDataByTimeWindow(bolusData, selectedDate, options.bolusTimeWindow)
-    console.log('bolusWindows: ', bolusWindows)
     let combinedData = [];
 
     for (let i = 0; i < 288; i++) {
@@ -103,7 +102,7 @@ export async function processData(selectedDate) {
     let key = selectedDate.toISOString().slice(0, 10);
     let timestamp = new Date();
     await saveData("Combined_Data", key, combinedData, timestamp);
-    console.log("combinedData: ", combinedData)
-    let totalBasalInsulinDelivered = await getInsulinDelivered(key);
+    //TODO: Calculate totals for ISF and ICR calculations
+    // let totalBasalInsulinDelivered = await getInsulinDelivered(key);
  
 }

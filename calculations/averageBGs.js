@@ -9,7 +9,6 @@ export async function averageBGs(selectedDates) {
         // Fill in missing values
         let filledValues = [];
         for (let i = 0, t = new Date(date); i < 289; i++, t.setMinutes(t.getMinutes() + 5)) {
-            if (i === 0) console.log('t: ', t)
             let entry = bgData.find(e => e.time === t.toISOString());
             if (entry) {
                 // console.log('If entry: ', entry.bg)
@@ -19,9 +18,7 @@ export async function averageBGs(selectedDates) {
                 let next = bgData.find(e => new Date(e.time) > t);
                 let avg = prev && next ? (prev + next.bg) / 2 : (prev || next.bg);
                 filledValues.push(avg);
-                console.log('Else entry. Prev: ', prev, ' Next: ', next, ' Avg: ', avg)
             }
-            console.log('filledValues: ', filledValues)
         }
 
         // Add filledValues to averages

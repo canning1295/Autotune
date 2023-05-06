@@ -40,10 +40,10 @@ export async function getBGs(currentDate) {
 			nextDateStringUTC,
 			"&count=1000000"
 		)
-		console.log("Grabbing BGs JSON from Nightscout...", bgUrl)
+		// console.log("Grabbing BGs JSON from Nightscout...", bgUrl)
 		const response = await fetch(bgUrl)
 		const bgJSON = await response.json()
-		console.log("Success(" + getSize(bgJSON) + " KB)")
+		// console.log("Success(" + getSize(bgJSON) + " KB)")
 
 		bgArray = []
 		bgJSON.map((i) => {

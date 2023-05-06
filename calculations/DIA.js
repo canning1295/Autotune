@@ -45,7 +45,7 @@ export function getDIA(netBasals, insulinAdjustment) {
         shortenedDIACurves[i] = shortenCurve(i, DIACurves)
     }
 
-    // When adding insulin, the insulin doesn't actually affect the whole day, but rather only impacts BG for the duration of insulin action. Accordingly, at the end of the DIA period, the calculations indicate the 100% of the insulin has been used, so the last BG of that period ends up being much lower (typically) than the next BG. To make it easier to fine tunue insulin adjustments. We add a short period onto the end of the DIACurves. Although this lengthens the DIACurves, thereby making the predictions less aggressive, it still allows for more accurate insulin adjustments.
+    // I dont think this will help, but I'm leaving it here to explore in the future. When adding insulin, the insulin doesn't actually affect the whole day, but rather only impacts BG for the duration of insulin action. Accordingly, at the end of the DIA period, the calculations indicate the 100% of the insulin has been used, so the last BG of that period ends up being much lower (typically) than the next BG. To make it easier to fine tunue insulin adjustments. We add a short period onto the end of the DIACurves. Although this lengthens the DIACurves, thereby making the predictions less aggressive, it still allows for more accurate insulin adjustments.
     // console.log('maxIndexArray', maxIndexArray)
     // for (let i = 0; i < 288; i++) {
     //     for (let j = 0; j < Math.floor(maxIndexArray[i]);) {

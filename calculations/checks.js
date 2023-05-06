@@ -5,8 +5,6 @@ export async function getInsulinDelivered(date) {
     const key = date;
     const objectStoreName = 'Combined_Data';
     const combinedDataArray = await getData(objectStoreName, key);
-    // console.log('combinedDataArray: ', combinedDataArray)
-    // Calculate the total insulin delivered for the day
     let totalInsulinDelivered = 0;
     let programmedTotalInsulinDelivered = 0;
     let i = 0;
@@ -23,14 +21,11 @@ export async function getInsulinDelivered(date) {
         const insulinPerEntryProgrammed = profileBasal / 60 * 5; // *Programmed (default profile) insulin delivered in the 5 minute period
         totalInsulinDelivered += insulinPerEntry;
         programmedTotalInsulinDelivered += insulinPerEntryProgrammed;
-        // console.log(i, 'actualBasal', actualBasal, 'insulinPerEntry', insulinPerEntry, 'totalInsulinDelivered', totalInsulinDelivered, )
-        // console.log(i, 'profileBasal', profileBasal, 'insulinPerEntryProgrammed', insulinPerEntryProgrammed, 'programmedTotalInsulinDelivered', programmedTotalInsulinDelivered)
+
         i++
     }
 
     // Round the result to a precision of 1 decimal places
     totalInsulinDelivered = parseFloat(totalInsulinDelivered.toFixed(1));
     programmedTotalInsulinDelivered = parseFloat(programmedTotalInsulinDelivered.toFixed(1));
-    // console.log('programmedTotalInsulinDelivered', programmedTotalInsulinDelivered)
-    // console.log('totalInsulinDelivered', totalInsulinDelivered)
 }

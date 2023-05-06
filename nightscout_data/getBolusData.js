@@ -29,11 +29,11 @@ export async function getAllBoluses(currentDate) {
 		"&find[eventType]=Carb+Correction",
 		"&count=1000000"
 	)
-	console.log("Grabbing Meal Bolus Data from Nightscout...", carbCorrectionUrl)
+	// console.log("Grabbing Meal Bolus Data from Nightscout...", carbCorrectionUrl)
 	const response1 = await fetch(carbCorrectionUrl)
 	const carbCorrectionJSON = (await response1.json()).reverse()
 
-	console.log("Success(" + getSize(carbCorrectionJSON) + " KB)")
+	// console.log("Success(" + getSize(carbCorrectionJSON) + " KB)")
 	const bolusUrl = options.url.concat(
 		"/api/v1/treatments.json?find[$or][0][created_at][$gte]=",
 		currentDate.toISOString(),
@@ -41,12 +41,11 @@ export async function getAllBoluses(currentDate) {
 		nextDate.toISOString(),
 		"&find[eventType]=Correction+Bolus"
 	)
-	console.log(
-		"Grabbing Correction Bolus Data from Nightscout...", bolusUrl)
+	// console.log("Grabbing Correction Bolus Data from Nightscout...", bolusUrl)
 	const response2 = await fetch(bolusUrl)
 	const bolusJSON = (await response2.json()).reverse()
 
-	console.log("Success(" + getSize(bolusJSON) + " KB)")
+	// console.log("Success(" + getSize(bolusJSON) + " KB)")
 	// prepend carbCorrectionJSON to bolusJSON
 	bolusJSON.unshift(...carbCorrectionJSON)
 	await saveData("Boluses", currentDate, bolusJSON, new Date());

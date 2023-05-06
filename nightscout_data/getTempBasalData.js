@@ -29,11 +29,11 @@ export async function getTempBasalData(currentDate) {
       "&find[eventType]=Temp+Basal",
       "&count=1000000"
     );
-    console.log("Grabbing Temp Basals from Nightscout...", tempBasalUrl);
+    // console.log("Grabbing Temp Basals from Nightscout...", tempBasalUrl);
     const response = await fetch(tempBasalUrl);
     const tempBasalJSON = await response.json();
 
-    console.log("Success(" + getSize(tempBasalJSON) + " KB)");
+    // console.log("Success(" + getSize(tempBasalJSON) + " KB)");
 
     let tempBasals = [];
     tempBasalJSON.map((i) => {
