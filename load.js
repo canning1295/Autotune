@@ -61,7 +61,14 @@ export function safetyMessage() {
 export async function setCurrentUser(userArray) {
     localStorage.setItem('autotune_currentUser', JSON.stringify(userArray));
     const currentUser = userArray;
+
+// Set the updated URL back to the options object
+options.url = url;
     if (currentUser) {
+		let url = currentUser.url;
+		if (url.endsWith('/')) {
+		  url = url.slice(0, -1);
+		}
         options.user = currentUser.username;
         options.url = currentUser.url;
         options.targetBG = currentUser.targetBG;

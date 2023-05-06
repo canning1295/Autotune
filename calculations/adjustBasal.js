@@ -1,6 +1,5 @@
 import { options } from "../index.js";
 import { getDIA } from "./DIA.js";
-import { showLoadingAnimation, hideLoadingAnimation } from "../loadingAnimation.js";
 
 export async function adjustBasalRates(averageCombinedData) {
     const isf = averageCombinedData[0].isf;

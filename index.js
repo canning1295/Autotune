@@ -7,9 +7,11 @@ export const options = {
 	user: "",
 	profiles: [],
 	targetBG: NaN,
-	poolingTime: 120,
+	poolingTime: 180,
 	lowTargetBG: 80,
 	targetBG: 100,
+	bolusTimeWindow: 3,
+	// bolusTimeWindow adds up how much bolus insulin was delivered every X hours (accept 1,2,3,4,6,8)
 };
 
 window.onload = () => start();
@@ -20,19 +22,3 @@ async function start() {
 	safetyMessage()
 	loadSettings()
 };
-
-// Summary for index.js:
-
-// The file imports safetyMessage and setCurrentUser functions from "./load.js" module.
-// The file imports loadSettings function from "./views/settings.js" module.
-// It exports an options object containing:
-// url: an empty string
-// ISF: NaN
-// weight: NaN
-// user: an empty string
-// It defines an async function start which:
-// Removes "autotune_currentUser" from localStorage.
-// Sets "autotuneView" in localStorage to "settings".
-// Calls safetyMessage().
-// Calls loadSettings().
-// When the window loads, the start function is called.

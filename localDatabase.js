@@ -18,7 +18,7 @@ export const initializeDB = (() => {
 
         const dbName = `Autotune_${options.user}`
 		// If you add any more objectStores, you need to increment the version number
-        const dbVersion = 1
+        const dbVersion = 2
 
         // Open or create the database
         const request = indexedDB.open(dbName, dbVersion)
@@ -39,6 +39,11 @@ export const initializeDB = (() => {
           }
           if (!db.objectStoreNames.contains('Basal_Rates')) {
             const objectStore = db.createObjectStore('Basal_Rates', {
+              keyPath: "key",
+            })
+          }
+          if (!db.objectStoreNames.contains('Boluses')) {
+            const objectStore = db.createObjectStore('Boluses', {
               keyPath: "key",
             })
           }
