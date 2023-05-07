@@ -1,5 +1,4 @@
 import { setCurrentUser } from '../load.js';
-import { loadNavMenu } from './navMenu.js';
 import { closeDB } from '../localDatabase.js';
 
 export function loadSettings() {

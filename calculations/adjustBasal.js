@@ -184,7 +184,7 @@ export async function adjustBasalRates(averageCombinedData) {
                                 let previousBG = predictedBGs[index]
                                 const BGChange = Math.abs(currentCurves[i][m]) * (Math.abs(currentAdjustment)) * -1 * isf;
                                 const outcomeBGChange = Math.abs(currentCurves[i][m]) * currentAdjustment * isf * adjustmentFactor;
-                                outcomeBGChange[index] -= outcomeBGChange;
+                                outcomeBGs[index] -= outcomeBGChange;
                                 predictedBGs[index] -= BGChange;
                                 if (predictedBGs[index] === NaN) {
                                     console.log('previousBG', previousBG, 'BGChange', BGChange)
@@ -241,7 +241,7 @@ export async function adjustBasalRates(averageCombinedData) {
                                 const BGChange = Math.abs(currentCurves[i][m]) * currentAdjustment * isf;
                                 const outcomeBGChange = Math.abs(currentCurves[i][m]) * currentAdjustment * isf * adjustmentFactor;
                                 predictedBGs[index] -= BGChange;
-                                outcomeBGChange[index] -= outcomeBGChange;
+                                outcomeBGs[index] -= outcomeBGChange;
                             }
                             
                             estimatedBasal[i] += currentAdjustment  * adjustmentFactor;
