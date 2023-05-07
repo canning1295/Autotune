@@ -1,8 +1,8 @@
 import { options } from "../index.js";
 
 export function GIRCurve(insulinKG) {
-	const adjustmentFactor = options.adjustmentFactor;
-	insulinKG = insulinKG / adjustmentFactor;
+	const diaAdjustment = options.diaAdjustment;
+	insulinKG = insulinKG / diaAdjustment;
      let xData = new Array(1920);
      for (let i = 0; i < 1920; i++) {
        let x = i * (15.0/3600);
