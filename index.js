@@ -26,6 +26,7 @@ async function start() {
 	let userArray = JSON.parse(localStorage.getItem('autotune_currentUser'))
 	if (!userArray) safetyMessage()
 	if(userArray) {
+		document.getElementById('current_user').innerText = userArray.username
 		setCurrentUser(userArray)
 		await initializeDB()
         loadNavMenu()
