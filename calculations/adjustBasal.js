@@ -235,11 +235,11 @@ export async function adjustBasalRates(averageCombinedData) {
                             for (let m = 0; m < currentCurves[i].length; m++) {
                                 const index = (i + m) % 288;
                                 let previousBG = predictedBGs[index]
-                                const BGChange = Math.abs(currentCurves[i][m]) * currentAdjustment * isf * adjustmentFactor;
+                                const BGChange = Math.abs(currentCurves[i][m]) * currentAdjustment * isf;
                                 predictedBGs[index] -= BGChange;
                             }
                             
-                            estimatedBasal[i] += currentAdjustment;
+                            estimatedBasal[i] += currentAdjustment  * adjustmentFactor;
                         } 
                         else 
                         {
