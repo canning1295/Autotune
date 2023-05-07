@@ -283,7 +283,7 @@ export async function adjustBasalRates(averageCombinedData) {
         }
         return max;
     }
-
+  
     function logs() {
         // const startingBGs = averageCombinedData.map((data) => data.bg);
         console.log('startingBGs', startingBGs)
@@ -294,7 +294,7 @@ export async function adjustBasalRates(averageCombinedData) {
         // console.log('startingBasalRates', startingBasals)
         console.log('estimatedBasals', estimatedBasal)
         console.log('averageBG start', averageBG)
-        const predictedBGAverage = predictedBGs.reduce((a, b) => a + b) / predictedBGs.length;
+        const predictedBGAverage = outcomeBGs.reduce((a, b) => a + b) / outcomeBGs.length;
         console.log('predictedBGAverage', predictedBGAverage)
         const StartingTotalBasal = sumArray(startingBasals);
         const EstimatedTotalBasal = sumArray(estimatedBasal);
