@@ -1,4 +1,4 @@
-import { saveData, initializeDB, getData } from "../localDatabase.js"
+import { saveData, getData } from "../localDatabase.js"
 import { options } from "../index.js"
 
 export async function getAllBoluses(currentDate) {

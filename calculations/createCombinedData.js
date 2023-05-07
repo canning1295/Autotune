@@ -3,10 +3,10 @@ import { getData, saveData } from "../../../localDatabase.js";
 import { options } from "../../../index.js";
 import { getTempBasalData } from "../../../nightscout_data/getTempBasalData.js";
 import { getInsulinDelivered } from "../../../calculations/checks.js";
-import { getAllBoluses } from "../../nightscout_data/getBolusData.js";
+import { getAllBoluses } from "../nightscout_data/getBolusData.js";
 import { getValueForTime, getInsulinDataByTimeWindow, getAverageInsulinForTime } from "../../../calculations/boluses.js";
 
-export async function processData(selectedDate) {
+export async function combineData(selectedDate) {
 
     selectedDate.toISOString().slice(0, 10);
     let bgData = await getBGs(selectedDate);
@@ -102,7 +102,14 @@ export async function processData(selectedDate) {
     let key = selectedDate.toISOString().slice(0, 10);
     let timestamp = new Date();
     await saveData("Combined_Data", key, combinedData, timestamp);
-    //TODO: Calculate totals for ISF and ICR calculations
-    // let totalBasalInsulinDelivered = await getInsulinDelivered(key);
- 
+        const sumBolusInsulin = combinedData.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue.bolusInsulin;
+        }, 0);
+        const sumBasalInsulin = combinedData.reduce((accumulator, currentValue) => {
+            return accumulator + (currentValue.actualBasal / 12);
+        }, 0)
+        const dailyInsulinTotal = sumBolusInsulin + sumBasalInsulin;
+        saveData("Daily_Bolus_Total", key, sumBolusInsulin, timestamp);
+        saveData("Daily_Basal_Total", key, sumBasalInsulin, timestamp);
+        saveData("Daily_Insulin_Total", key, dailyInsulinTotal, timestamp); 
 }

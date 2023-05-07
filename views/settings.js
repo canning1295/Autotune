@@ -22,6 +22,7 @@ export function loadSettings() {
                         <th data-priority="3">Target BG</th>
                         <th data-priority="4">Low Target BG</th>
                         <th data-priority="5">Weight</th>
+                        <th data-priority="6">Adjustment Factor</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -32,59 +33,81 @@ export function loadSettings() {
 
         <!-- User Modal -->
         <div class="modal fade" id="userModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Autotune User</h5>
-                        <!--<button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
-                    </div>
-                    <form id="userForm">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="url" class="form-label">URL</label>
-                                <input type="text" placeholder="https://yoursite.com" class="form-control" id="url" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="targetBG" class="form-label">Target BG</label>
-                                <input type="number" class="form-control" id="targetBG" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="lowTargetBG" class="form-label">Low Target BG</label>
-                                <input type="number" class="form-control" id="lowTargetBG" required>
-                            </div>
-                            <div class="mb-3">
-                            <label for="weight" class="form-label">Weight in kg</label>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Autotune User</h5>
+                </div>
+                <form id="userForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="username" class="form-label" style="font-weight: bold;">Username</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="url" class="form-label" style="font-weight: bold;">URL</label>
+                            <input type="text" placeholder="https://yoursite.com" class="form-control" id="url" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="targetBG" class="form-label" style="font-weight: bold;">Target BG</label>
+                            <input type="number" class="form-control" id="targetBG" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lowTargetBG" class="form-label" style="font-weight: bold;">Low Target BG</label>
+                            <input type="number" class="form-control" id="lowTargetBG" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="weight" class="form-label" style="font-weight: bold;">Weight in kg</label>
                             <input type="number" class="form-control" id="weight" required>
                         </div>
+                        <div class="mb-3">
+                            <p>Autotune is programmed using glucose infusion rates for patients in a hospital setting. Below are options to adjust Autotunes recommendations to your indivdual needs. Consider starting with a more conservative selections.</p>
+                            <p>The duration of insulin activity (how long delivered insulin will have an impact blood glucose) varies upon the amount of insulin delivered. Choosing the longer options will cause Autotune to recommend less insulin</p>
+                            <label for="diaAdjustment" class="form-label" style="font-weight: bold;">Duration of Insulin Activity</label>
+                            <select class="form-control" id="diaAdjustment" required>
+                                <option value="0.6">Longest</option>
+                                <option value="0.7">Longest</option>
+                                <option value="0.8" selected>Average</option>
+                                <option value="0.9">Shorter</option>
+                                <option value="1.0">Shortest</option>
+                            </select><br>
+                            <p>The "Recommedation Adjustment Factor" allows users adjust how much of Autotune's recommendation should be implemented. Selecting "Less" and "Least" will cause Autotune to recommend less insulin adjustments.</p>
+                            <label for="adjustmentFactor" class="form-label" style="font-weight: bold;">Recommendation Adjustment Factor</label>
+                            <select class="form-control" id="adjustmentFactor" required>
+                                <option value="0.4">Least</option>
+                                <option value="0.5">Less</option>
+                                <option value="0.6" selected>Average</option>
+                                <option value="0.75">More</option>
+                                <option value="1.0">Most</option>
+                            </select>
+                        </div>
                     </div>
-                    
-             <div class="modal-footer">
-                <div class="row w-100">
-                    <div class="col-12 text-center mb-2">
-                        <p>Click the save button to enable user access to Autotune.</p>
+                    <div class="modal-footer">
+                        <div class="row w-100">
+                            <div class="col-12 text-center mb-2">
+                                <p>Click the save button to enable user access to Autotune.</p>
+                            </div>
+                            <div class="col-12 d-flex justify-content-end">
+                                <button type="button" class="btn btn-danger me-2" id="deleteBtn" style="display: none;">Delete</button>
+                                <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 d-flex justify-content-end">
-                        <button type="button" class="btn btn-danger me-2" id="deleteBtn" style="display: none;">Delete</button>
-                        <!--<button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Close</button>-->
-                        <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
-                    </div>
-                </div>
-            </div>
-
-                </div>
-                
-                </div>
-                
-                
                 </form>
             </div>
         </div>
+    </div>
+    
     `
     document.getElementById('main').innerHTML = htmlCode;
+
+    function toLowerCase(input) {
+        input.value = input.value.toLowerCase();
+    }
+
+    document.getElementById('url').addEventListener('input', function() {
+        toLowerCase(this);
+    });
 
     let users = JSON.parse(localStorage.getItem('autotune_users')) || [];
 
@@ -98,14 +121,18 @@ export function loadSettings() {
                 { targets: 1, visible: false },
                 { targets: 2, visible: false },
                 { targets: 3, visible: false },
-                { targets: 4, visible: false }
+                { targets: 4, visible: false },
+                { targets: 5, visible: false },
+                { targets: 6, visible: false },
             ],
             columns: [
                 { title: "Select user" }, // specify the title property for the first column
                 null, // leave the title property for the remaining columns null
                 null,
                 null,
-                null
+                null,
+                null,
+                null,
             ]
         });
         
@@ -123,6 +150,8 @@ export function loadSettings() {
             document.getElementById('targetBG').value = '';
             document.getElementById('lowTargetBG').value = '';
             document.getElementById('weight').value = '';
+            document.getElementById('adjustmentFactor').value = '0.5';
+            document.getElementById('diaAdjustment').value = '0.55';
             document.getElementById('deleteBtn').style.display = 'none';
         }        
         // Create a new parent container
@@ -167,6 +196,8 @@ export function loadSettings() {
                 tableData[2] = currentUser.targetBG;
                 tableData[3] = currentUser.lowTargetBG;
                 tableData[4] = currentUser.weight;
+                tableData[5] = currentUser.diaAdjustment;
+                tableData[6] = currentUser.adjustmentFactor;
             } else {
                 console.log('User not found');
             }
@@ -177,6 +208,8 @@ export function loadSettings() {
             document.getElementById('targetBG').value = currentUser.targetBG;
             document.getElementById('lowTargetBG').value = currentUser.lowTargetBG;
             document.getElementById('weight').value = currentUser.weight;
+            document.getElementById('diaAdjustment').value = currentUser.diaAdjustment;
+            document.getElementById('adjustmentFactor').value = currentUser.adjustmentFactor;
             document.getElementById('deleteBtn').style.display = 'block';
             // localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
             userModal.show();
@@ -189,22 +222,27 @@ export function loadSettings() {
     userForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const username = document.getElementById('username').value;
-        const url = document.getElementById('url').value;
+        let url = document.getElementById('url').value;
+   		if (url.endsWith('/')) {
+		  url = url.slice(0, -1);
+		}
         const targetBG = document.getElementById('targetBG').value;
         const lowTargetBG = document.getElementById('lowTargetBG').value;
         const weight = document.getElementById('weight').value;
+        const adjustmentFactor = document.getElementById('adjustmentFactor').value;
+        const diaAdjustment = document.getElementById('diaAdjustment').value;
         users = users.filter((user) => user.username !== username);
 
-        users.push({ username, url, targetBG, lowTargetBG, weight });
+        users.push({ username, url, targetBG, lowTargetBG, weight, adjustmentFactor, diaAdjustment });
         localStorage.setItem('autotune_users', JSON.stringify(users));
-        let currentUser = { username, url, targetBG, lowTargetBG, weight}
+        let currentUser = { username, url, targetBG, lowTargetBG, weight, adjustmentFactor, diaAdjustment}
         // console.log('currentUser:', currentUser)
         setCurrentUser(currentUser);
         //   localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
         document.getElementById('current-user-select').innerHTML = username;
         userModal.hide();
         populateTable(users);
-        loadNavMenu()
+        window.location.reload();
     });
 
     document.getElementById('deleteBtn').addEventListener('click', () => {
@@ -221,13 +259,17 @@ export function loadSettings() {
     });
 
     function populateTable(users) {
-    const dataTable = $('#userTable').DataTable();
-    dataTable.clear().rows.add(users.map(user => [
-        user.username,
-        user.url,
-        user.targetBG,
-        user.lowTargetBG,
-        user.weight
-    ])).draw();
+        const dataTable = $('#userTable').DataTable();
+        const rowData = users.map(user => [
+            user.username,
+            user.url,
+            user.targetBG,
+            user.lowTargetBG,
+            user.weight,
+            user.adjustmentFactor,
+            user.diaAdjustment
+        ]);
+        dataTable.clear().rows.add(rowData).draw();
     };
+    
 };

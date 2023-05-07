@@ -1,6 +1,6 @@
 import { updateChart } from "./updateChart.js";
-import { processData } from "./processData.js";
-import { getAverageCombinedData } from "./createAvgCombinedData.js";
+import { combineData } from "../../calculations/createCombinedData.js";
+import { getAverageCombinedData } from "../../calculations/createAvgCombinedData.js";
 import { adjustBasalRates } from "../../calculations/adjustBasal.js";
 import { showLoadingAnimation, hideLoadingAnimation } from "../../loadingAnimation.js";
 
@@ -87,7 +87,7 @@ export function loadBasal() {
                 // Add date to array if not already selected
                 selectedDates.push(selectedDate);
                 updateChart(selectedDate);
-                processData(selectedDate)
+                combineData(selectedDate)
             }
             
             // Check if there are any selected dates

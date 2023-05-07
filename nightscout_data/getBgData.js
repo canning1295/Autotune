@@ -79,12 +79,3 @@ function roundToNearestFiveMinutes(date) {
 	const roundedTime = new Date(Math.round(date.getTime() / coeff) * coeff);
 	return roundedTime;
   }
-
-// Summary for getBgData.js:
-
-// Imports saveData function from "../localDatabase.js" and options object from "../index.js".
-// Initializes bgArray as an empty array.
-// Defines and exports getBGs function, which takes a currentDate argument. It checks if the BG data for the current date already exists in the local database; if it doesn't, it fetches the data from Nightscout API and saves it to the database. If the data already exists, it retrieves it from the database. The function returns the blood glucose data in the bgArray.
-// Defines getSize function, which calculates the size of a JSON object in kilobytes.
-// Defines roundToNearestFiveMinutes function, which rounds a given date object to the nearest 5-minute interval.
-// Defines checkDataExists function, which checks if the data with a given key exists in the specified objectStore of the local database. Returns a boolean indicating if the data exists.

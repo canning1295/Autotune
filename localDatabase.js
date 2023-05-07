@@ -52,6 +52,21 @@ export const initializeDB = (() => {
               keyPath: "key",
             })
           }
+          if (!db.objectStoreNames.contains('Daily_Bolus_Total')) {
+            const objectStore = db.createObjectStore('Daily_Bolus_Total', {
+              keyPath: "key",
+            })
+          }
+          if (!db.objectStoreNames.contains('Daily_Basal_Total')) {
+            const objectStore = db.createObjectStore('Daily_Basal_Total', {
+              keyPath: "key",
+            })
+          }
+          if (!db.objectStoreNames.contains('Daily_Insulin_Total')) {
+            const objectStore = db.createObjectStore('Daily_Insulin_Total', {
+              keyPath: "key",
+            })
+          }
 
         //   console.log("Database upgrade is complete")
         }

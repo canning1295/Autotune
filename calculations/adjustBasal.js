@@ -15,8 +15,10 @@ export async function adjustBasalRates(averageCombinedData) {
     const DIACurves = getDIA(startingBasalsPlusBolus, 0);
     const averageDIALength = DIACurves.map((curve) => curve.length).reduce((a, b) => a + b) / DIACurves.length / 12;
     const averageBG = averageCombinedData.map((data) => data.bg).reduce((a, b) => a + b) / averageCombinedData.length;
-    const insulinLikelyNeeded = (averageBG - targetBG) / isf * 24 / averageDIALength;
+    const insulinLikelyNeeded = (averageBG - targetBG) / isf * 24 / averageDIALength * 2;
     const insulinNeededPerHour = insulinLikelyNeeded / 24;
+    const adjustmentFactor = options.adjustmentFactor;
+    console.log('adjustmentFactor', adjustmentFactor)
     console.log('insulinLikelyNeeded', insulinLikelyNeeded, 'averageDIALength',averageDIALength,'AverageBG',averageBG , 'TargetBG', targetBG)
     // const minAdjustment = getMin(averageCombinedData) / averageDIALength;
     // const maxAdjustment = getMax(averageCombinedData) / averageDIALength;
@@ -43,7 +45,7 @@ export async function adjustBasalRates(averageCombinedData) {
         
         for (let i = 0; i < 20; i++) {
             const continueLoop1Filter = continueLoop1.filter(value => !value).length
-            if(continueLoop1Filter >= 220){console.log('false count', continueLoop1Filter, i); break}
+            // if(continueLoop1Filter >= 220){console.log('false count', continueLoop1Filter, i); break}
             currentAdjustment = insulinNeededPerHour / 12 / -10
             const currentCurves = getDIA(startingBasalsPlusBolus, currentAdjustment);
             const count = 1;
@@ -179,7 +181,7 @@ export async function adjustBasalRates(averageCombinedData) {
                             for (let m = 0; m < currentCurves[i].length; m++) {
                                 const index = (i + m) % 288;
                                 let previousBG = predictedBGs[index]
-                                const BGChange = currentCurves[i][m] * (Math.abs(currentAdjustment)) * -1 * isf;
+                                const BGChange = Math.abs(currentCurves[i][m]) * (Math.abs(currentAdjustment)) * -1 * isf;
                                 predictedBGs[index] -= BGChange;
                                 if (predictedBGs[index] === NaN) {
                                     console.log('previousBG', previousBG, 'BGChange', BGChange)
@@ -233,10 +235,11 @@ export async function adjustBasalRates(averageCombinedData) {
                             for (let m = 0; m < currentCurves[i].length; m++) {
                                 const index = (i + m) % 288;
                                 let previousBG = predictedBGs[index]
-                                const BGChange = currentCurves[i][m] * Math.abs(currentAdjustment) * isf;
+                                const BGChange = Math.abs(currentCurves[i][m]) * currentAdjustment * isf * adjustmentFactor;
                                 predictedBGs[index] -= BGChange;
                             }
-                            estimatedBasal[i] += currentAdjustment * options.adjustmentFactor;
+                            
+                            estimatedBasal[i] += currentAdjustment;
                         } 
                         else 
                         {

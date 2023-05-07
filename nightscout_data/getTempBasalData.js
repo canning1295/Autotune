@@ -72,11 +72,3 @@ export async function getTempBasalData(currentDate) {
       ) / 10
     )
 }
-
-// Summary for getTempBasalData.js:
-
-// - Imports `saveData` and `getData` functions from "../localDatabase.js" and `options` object from "../index.js".
-// - Defines and exports `getTempBasalData` function, which retrieves temporary basal data for a given date. It first checks if the data exists in the local database. If it does, the function uses the stored data; otherwise, it fetches the temporary basal data from the Nightscout API. The function then processes the fetched data, corrects any discrepancies in the duration, and saves the data to the local database.
-// - Defines `getSize` function, which calculates the size of a JSON object in kilobytes.
-
-// In summary, getTempBasalData.js is responsible for retrieving temporary basal data for a specific date, either from the local database or by fetching it from the Nightscout API. It also ensures that any discrepancies in the duration of temporary basal data are corrected before saving it to the local database.

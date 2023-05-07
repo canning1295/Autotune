@@ -1,12 +1,14 @@
+import { options } from "../index.js";
+
 export function GIRCurve(insulinKG) {
-    //  console.log('insulinKG', insulinKG)
+	const adjustmentFactor = options.adjustmentFactor;
+	insulinKG = insulinKG / adjustmentFactor;
      let xData = new Array(1920);
      for (let i = 0; i < 1920; i++) {
        let x = i * (15.0/3600);
        xData[i] = x;
      }
      let smallYData = getSmallYData(xData);
-    //  console.log('smallYData', smallYData)
      let mediumYData = getMediumYData(xData);
      let largeYData = getLargeYData(xData);
      let smallCurve = [];

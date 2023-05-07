@@ -1,4 +1,4 @@
-import { getData } from "../../localDatabase.js";
+import { getData } from "../localDatabase.js";
 
 export async function getAverageCombinedData(selectedDates) {
     let allCombinedData = [];
