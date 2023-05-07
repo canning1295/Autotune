@@ -1,5 +1,5 @@
-import { getData } from '../../localDatabase.js';
-import { getBGs } from '../../nightscout_data/getBgData.js';
+import { getData } from '../localDatabase.js';
+import { getBGs } from '../nightscout_data/getBgData.js';
 
 export async function updateChart(date) {
     // set <p id="instruct1"> to display: none

@@ -1,4 +1,4 @@
-import { updateChart } from "./updateChart.js";
+import { updateChart } from "../updateChart.js";
 import { combineData } from "../../calculations/createCombinedData.js";
 import { getAverageCombinedData } from "../../calculations/createAvgCombinedData.js";
 import { adjustBasalRates } from "../../calculations/adjustBasal.js";
@@ -20,7 +20,7 @@ export function loadBasal() {
                         <h5 class="modal-title" id="dateSelectionModalLabel">Select Dates</h5>
                     </div>
                     <div class="modal-body">
-                        <p id="instruct1">Please select dates below that you would like to include in the BG average used to calculate your basal rate adjustment calculations.</p>
+                        <p id="instruct1">Please select dates below that you would like to include in the BG average used to calculate your basal rate adjustment recommendations.</p>
                         <div class="row">
                             <div class="col-12">
                                 <div id="chartContainer" class="mb-4">
@@ -33,7 +33,7 @@ export function loadBasal() {
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" value="" id="includeTempBasal" checked />
-                                    <label class="form-check-label" for="includeTempBasal">Include temp basal delivery in calculations</label>
+                                    <label class="form-check-label" for="includeTempBasal">Calculate basal adjustments based the temp basal insulin delivery averages.</label>
                                 </div>
                             </div>
                         </div>
@@ -44,6 +44,7 @@ export function loadBasal() {
             </div>
         </div>
     `;
+// TODO: Allow user to only use profile data for basal adjustment
     document.getElementById("main").innerHTML = htmlCode;
     const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
     var selectedDates = [];
@@ -104,9 +105,9 @@ export function loadBasal() {
         const selectDatesButton = document.getElementById("selectDatesButton");
         const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
 
-        selectDatesButton.addEventListener("click", () => {
-            dateSelectionModal.show();
-        });
+        // selectDatesButton.addEventListener("click", () => {
+        //     dateSelectionModal.show();
+        // });
 
         // Add event listener to the "Run" button
         document.getElementById("calculate-basals").addEventListener("click", async () => {
@@ -122,8 +123,6 @@ export function loadBasal() {
             let Basal = await adjustBasalRates(AverageCombinedData);
             const tempBasal = Basal.tempBasal;
             const adjustedBasal = Basal.adjustedBasal;
-        
-            // Hide the loading animation and display the basal table
             
             hideModal('dateSelectionModal')
             loadBasalsTable(tempBasal, adjustedBasal);
@@ -132,24 +131,24 @@ export function loadBasal() {
               
     });
     function hideModal(modalElementId) {
-        const modalElement = document.getElementById(modalElementId);
-        const backdrop = document.querySelector(".modal-backdrop");
-      
-        if (modalElement) {
-          modalElement.classList.remove("show");
-          modalElement.style.display = "none";
-          modalElement.setAttribute("aria-hidden", "true");
-      
-          if (backdrop) {
-            backdrop.parentNode.removeChild(backdrop);
-          }
-      
-          // Remove 'modal-open' class from the body
-          document.body.classList.remove("modal-open");
-        } else {
-          console.error(`Element with ID '${modalElementId}' not found.`);
-        }
-      }
+		const modalElement = document.getElementById(modalElementId);
+		const backdrop = document.querySelector(".modal-backdrop");
+	
+		if (modalElement) {
+			modalElement.classList.remove("show");
+			modalElement.style.display = "none";
+			modalElement.setAttribute("aria-hidden", "true");
+		
+			if (backdrop) {
+				backdrop.parentNode.removeChild(backdrop);
+			}
+		
+			// Remove 'modal-open' class from the body
+			document.body.classList.remove("modal-open");
+		} else {
+			console.error(`Element with ID '${modalElementId}' not found.`);
+		}
+	}
       
 
 
@@ -191,7 +190,6 @@ var htmlCode =
     <button type="button" class="btn btn-primary" id="selectDatesButton">Select dates</button>
 
     <div class="modal fade" id="dateSelectionModal" tabindex="-1" role="dialog" aria-labelledby="dateSelectionModalLabel" aria-hidden="true">
-      <!-- modal content omitted for brevity -->
     </div>
 
     <table id="dataTable" class="table table-striped table-bordered">

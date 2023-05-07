@@ -1,6 +1,6 @@
 import { loadSettings } from "./settings.js";
 import { loadBasal } from "./basal/basal.js";
-
+import { loadICR } from "./icr/icr-calculator.js"  
 
 export function loadNavMenu() {
     
@@ -23,6 +23,24 @@ export function loadNavMenu() {
             }
         }
     }
+    function icr() {
+        let autotuneView = localStorage.getItem("autotuneView");
+        if (localStorage.getItem("autotune_currentUser").length > 0 && autotuneView !== "icr") {
+            if (autotuneView !== "icr") {
+                loadICR();
+                localStorage.setItem("autotuneView", "icr");
+            }
+        }
+    }
+    function isf() {
+        let autotuneView = localStorage.getItem("autotuneView");
+        if (localStorage.getItem("autotune_currentUser").length > 0 && autotuneView !== "isf") {
+            if (autotuneView !== "isf") {
+                loadBasal();
+                localStorage.setItem("autotuneView", "isf");
+            }
+        }
+    }
     // JavaScript code to insert HTML into the "main" div
     var htmlCode = /*html*/
         `
@@ -30,11 +48,11 @@ export function loadNavMenu() {
                 <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5zm0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5h-1z"/>
             </svg></button>
 
-            <button type="button" id="isf-button" class="menu-button" onclick="displayView('isf-view')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet-fill icon" viewBox="0 0 16 16">
+            <button type="button" id="isf-button" class="menu-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet-fill icon" viewBox="0 0 16 16">
                 <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
             </svg></button>
 
-            <button type="button" id="icr-button" class="menu-button" onclick="displayView('icr-view')">🌮</button>
+            <button type="button" id="icr-button" class="menu-button">🌮</button>
 
             <button type="button" id="settings" class="menu-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear icon" viewBox="0 0 16 16">
                 <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
@@ -44,4 +62,6 @@ export function loadNavMenu() {
     document.getElementById('footer').innerHTML = htmlCode;
     document.getElementById('settings').addEventListener('click', settings);
     document.getElementById('basal-button').addEventListener('click', basal);
+    document.getElementById('icr-button').addEventListener('click', icr);
+    document.getElementById('isf-button').addEventListener('click', isf);
 }
