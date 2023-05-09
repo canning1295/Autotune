@@ -1,4 +1,4 @@
-import { saveData, getData } from "../localDatabase.js";
+import { saveData, getData } from "../utils/localDatabase.js";
 import { options } from "../index.js";
 
 export async function getTempBasalData(currentDate) {

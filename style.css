@@ -43,7 +43,13 @@
 			border: 1px solid #ccc;
 			padding: 8px; /* Increase padding to make dates bigger */
 			}
-			
+/* 
+BEGIN CSS FOR ICR
+*/
+#reference{
+	margin-top: 20px;
+}
+/* 		
 	/* 
 	BEGIN CSS FOR SETTINGS
 	*/
@@ -255,6 +261,12 @@ BEGIN CSS FOR BASAL
 	
 	.form-check-input {
 		margin-right: 0px;
+	}
+/* 
+BEGIN CSS FOR ICR
+*/
+	#reference{
+		margin-top: 20px;
 	}
 /* 
 BEGIN CSS FOR SETTINGS

@@ -1,5 +1,5 @@
 import { setCurrentUser } from '../load.js';
-import { closeDB } from '../localDatabase.js';
+import { closeDB } from '../utils/localDatabase.js';
 
 export function loadSettings() {
   console.log('Loading settings')

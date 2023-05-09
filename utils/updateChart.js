@@ -1,4 +1,4 @@
-import { getData } from '../localDatabase.js';
+import { getData } from './localDatabase.js';
 import { getBGs } from '../nightscout_data/getBgData.js';
 
 export async function updateChart(date) {

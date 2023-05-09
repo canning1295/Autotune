@@ -1,7 +1,7 @@
 import { safetyMessage, setCurrentUser } from "./load.js";
 import { loadNavMenu } from "./views/navMenu.js";
 import { loadSettings } from "./views/settings.js";
-import { initializeDB } from "./localDatabase.js";
+import { initializeDB } from "./utils/localDatabase.js";
 import { getUserProfiles } from "./nightscout_data/getProfileData.js";
 
 export const options = {

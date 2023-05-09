@@ -1,4 +1,4 @@
-import { saveData, getData, getTimestamp } from "../localDatabase.js"
+import { saveData, getData, getTimestamp } from "../utils/localDatabase.js"
 import { options } from "../index.js"
 
 let profileData = undefined

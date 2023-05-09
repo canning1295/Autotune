@@ -1,6 +1,7 @@
-import { loadSettings } from "./settings.js";
-import { loadBasal } from "./basal/basal.js";
-import { loadICR } from "./icr/icr-calculator.js"  
+import { loadSettings } from "./settings.js"
+import { loadBasal } from "./basal.js"
+import { loadICR } from "./icr-calculator.js"
+import { loadISF } from "./isf-calculator.js"
 
 export function loadNavMenu() {
     
@@ -36,7 +37,7 @@ export function loadNavMenu() {
         let autotuneView = localStorage.getItem("autotuneView");
         if (localStorage.getItem("autotune_currentUser").length > 0 && autotuneView !== "isf") {
             if (autotuneView !== "isf") {
-                loadBasal();
+                loadISF();
                 localStorage.setItem("autotuneView", "isf");
             }
         }

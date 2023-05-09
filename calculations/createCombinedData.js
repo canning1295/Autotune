@@ -1,8 +1,7 @@
 import { getBGs } from "../../../nightscout_data/getBgData.js";
-import { getData, saveData } from "../../../localDatabase.js";  
+import { getData, saveData } from "../utils/localDatabase.js";  
 import { options } from "../../../index.js";
 import { getTempBasalData } from "../../../nightscout_data/getTempBasalData.js";
-import { getInsulinDelivered } from "../../../calculations/checks.js";
 import { getAllBoluses } from "../nightscout_data/getBolusData.js";
 import { getValueForTime, getInsulinDataByTimeWindow, getAverageInsulinForTime } from "../../../calculations/boluses.js";
 
