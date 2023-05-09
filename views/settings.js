@@ -61,7 +61,7 @@ export function loadSettings() {
                         </div>
                         <div class="mb-3">
                             <p>Autotune is programmed using glucose infusion rates for patients in a hospital setting. Below are options to adjust Autotunes recommendations to your indivdual needs. Consider starting with a more conservative selections.</p>
-                            <p>The duration of insulin activity (how long delivered insulin will have an impact blood glucose) varies upon the amount of insulin delivered. Choosing the longer options will cause Autotune to recommend less insulin</p>
+                            <p>The duration of insulin activity (how long delivered insulin will have an impact blood glucose) varies upon the amount of insulin delivered. Choosing the longer options will cause Autotune to recommend less changes to insulin adjustments when calculating basal rates. Insulin to Carb and Insulin Sensitivity Factor calculations are not affected by the settings below.</p>
                             <label for="diaAdjustment" class="form-label" style="font-weight: bold;">Duration of Insulin Activity</label>
                             <select class="form-control" id="diaAdjustment" required>
                                 <option value="0.6">Longest</option>
@@ -70,7 +70,7 @@ export function loadSettings() {
                                 <option value="0.9">Shorter</option>
                                 <option value="1.0">Shortest</option>
                             </select><br>
-                            <p>The "Recommedation Adjustment Factor" allows users adjust how much of Autotune's recommendation should be implemented. Selecting "Less" and "Least" will cause Autotune to recommend less insulin adjustments.</p>
+                            <p>The "Recommedation Adjustment Factor" allows users adjust how much of Autotune's recommendation should be implemented when calculating basal rates. Selecting "Less" and "Least" will cause Autotune to recommend less insulin adjustments.</p>
                             <label for="adjustmentFactor" class="form-label" style="font-weight: bold;">Recommendation Adjustment Factor</label>
                             <select class="form-control" id="adjustmentFactor" required>
                                 <option value="0.4">Least</option>
