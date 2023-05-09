@@ -26,7 +26,6 @@ export async function getAverageCombinedData(selectedDates) {
 		let count = 0;
   
 		for (let j = 0; j < allCombinedData.length; j++) {
-			console.log(`allCombinedData[${j}][${i}]: `, allCombinedData[j][i]);
 
 			if (allCombinedData[j][i]) {
 			sumBg += allCombinedData[j][i].bg;
