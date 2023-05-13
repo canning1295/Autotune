@@ -32,15 +32,15 @@ export async function adjustBasalRates(averageCombinedData) {
     async function runCalcs() {
 
         let continueLoop1 = new Array(288).fill(true);
-        let continueLoop2 = new Array(288).fill(true);
-        let continueLoop3 = new Array(288).fill(true);
-        let continueLoop4 = new Array(288).fill(true);
-        let continueLoop5 = new Array(288).fill(true);
+        // let continueLoop2 = new Array(288).fill(true);
+        // let continueLoop3 = new Array(288).fill(true);
+        // let continueLoop4 = new Array(288).fill(true);
+        // let continueLoop5 = new Array(288).fill(true);
         let continueLoop6 = new Array(288).fill(true);
         let continueLoop7 = new Array(288).fill(true);
         let continueLoop8 = new Array(288).fill(true);
         let continueLoop9 = new Array(288).fill(true);
-        let continueLoop10 = new Array(288).fill(true);
+        // let continueLoop10 = new Array(288).fill(true);
 
         let currentAdjustment = NaN
         
@@ -79,32 +79,32 @@ export async function adjustBasalRates(averageCombinedData) {
         // }
 
         for (let i = 0; i < 2; i++) {
-            const continueLoop1Filter = continueLoop6.filter(value => !value).length
-            if(continueLoop1Filter >= 220){console.log('false count', continueLoop1Filter); break}
+            const continueLoop6Filter = continueLoop6.filter(value => !value).length
+            if(continueLoop6Filter >= 220){console.log('false count', continueLoop6Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 2
             const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 1;
             await lowerBGValues(currentCurves, currentAdjustment, count);
         }
         for (let i = 0; i < 4; i++) {
-            const continueLoop2Filter = continueLoop6.filter(value => !value).length
-            if(continueLoop2Filter >= 220){console.log('false count', continueLoop2Filter); break}
+            const continueLoop7Filter = continueLoop6.filter(value => !value).length
+            if(continueLoop7Filter >= 220){console.log('false count', continueLoop7Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 4
             const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 2
             await lowerBGValues(currentCurves, currentAdjustment, count);
         }
         for (let i = 0; i < 16; i++) {
-            const continueLoop3Filter = continueLoop6.filter(value => !value).length
-            if(continueLoop3Filter >= 220){console.log('false count', continueLoop3Filter); break}
+            const continueLoop8Filter = continueLoop6.filter(value => !value).length
+            if(continueLoop8Filter >= 220){console.log('false count', continueLoop8Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 8
             const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 3
             await lowerBGValues(currentCurves, currentAdjustment, count);
         }
         for (let i = 0; i < 16; i++) {
-            const continueLoop4Filter = continueLoop6.filter(value => !value).length
-            if(continueLoop4Filter >= 220){console.log('false count', continueLoop4Filter); break}
+            const continueLoop9Filter = continueLoop6.filter(value => !value).length
+            if(continueLoop9Filter >= 220){console.log('false count', continueLoop9Filter); break}
             currentAdjustment = insulinNeededPerHour / 12 / 10
             const currentCurves = getDIA(estimatedBasal, currentAdjustment);
             const count = 4
@@ -152,10 +152,10 @@ export async function adjustBasalRates(averageCombinedData) {
                     if 
                     (
                         count === 1 && continueLoop1[i]
-                        || count === 2 && continueLoop2[i]
-                        || count === 3 && continueLoop3[i]
-                        || count === 4 && continueLoop4[i]
-                        || count === 5 && continueLoop5[i]
+                        // || count === 2 && continueLoop2[i]
+                        // || count === 3 && continueLoop3[i]
+                        // || count === 4 && continueLoop4[i]
+                        // || count === 5 && continueLoop5[i]
                     ) 
                     {
                         let shouldAdjust = false;
@@ -164,15 +164,15 @@ export async function adjustBasalRates(averageCombinedData) {
                             const currentBG = predictedBGs[index];
                             const BGChange = currentCurves[i][j] * currentAdjustment * isf;
                             const predictedBG = currentBG - BGChange;
-                            if (currentBG < lowTargetBG) {
+                            if (currentBG < lowTargetBG && estimatedBasal[i] >= Math.abs(currentAdjustment)) {
                               shouldAdjust = true;
                             }
-                            if (j === currentCurves[i].length - 1 && shouldAdjust === false) {
+                            if (shouldAdjust === false) {
                               if (count === 1) {continueLoop1[i] = false;}
-                              if (count === 2) {continueLoop2[i] = false;}
-                              if (count === 3) {continueLoop3[i] = false;}
-                              if (count === 4) {continueLoop4[i] = false;}
-                              if (count === 5) {continueLoop5[i] = false;}
+                            //   if (count === 2) {continueLoop2[i] = false;}
+                            //   if (count === 3) {continueLoop3[i] = false;}
+                            //   if (count === 4) {continueLoop4[i] = false;}
+                            //   if (count === 5) {continueLoop5[i] = false;}
                           
                               continue;
                             }
@@ -182,7 +182,7 @@ export async function adjustBasalRates(averageCombinedData) {
                             for (let m = 0; m < currentCurves[i].length; m++) {
                                 const index = (i + m) % 288;
                                 let previousBG = predictedBGs[index]
-                                const BGChange = Math.abs(currentCurves[i][m]) * (Math.abs(currentAdjustment)) * -1 * isf;
+                                const BGChange = Math.abs(currentCurves[i][m]) * Math.abs(currentAdjustment) * -1 * isf;
                                 const outcomeBGChange = Math.abs(currentCurves[i][m]) * currentAdjustment * isf * adjustmentFactor;
                                 outcomeBGs[index] -= outcomeBGChange;
                                 predictedBGs[index] -= BGChange;
@@ -195,10 +195,10 @@ export async function adjustBasalRates(averageCombinedData) {
                         else 
                         {
                                 if (count === 1) {continueLoop1[i] = false;}
-                                if (count === 2) {continueLoop2[i] = false;}
-                                if (count === 3) {continueLoop3[i] = false;}
-                                if (count === 4) {continueLoop4[i] = false;}
-                                if (count === 5) {continueLoop5[i] = false;}
+                                // if (count === 2) {continueLoop2[i] = false;}
+                                // if (count === 3) {continueLoop3[i] = false;}
+                                // if (count === 4) {continueLoop4[i] = false;}
+                                // if (count === 5) {continueLoop5[i] = false;}
                         }
                     }
                 } resolve()
@@ -213,7 +213,7 @@ export async function adjustBasalRates(averageCombinedData) {
                         || count === 2 && continueLoop7[i]
                         || count === 3 && continueLoop8[i]
                         || count === 4 && continueLoop9[i]
-                        || count === 5 && continueLoop10[i]
+                        // || count === 5 && continueLoop10[i]
                     ) 
                     {
                         let shouldAdjust = true;
@@ -228,7 +228,7 @@ export async function adjustBasalRates(averageCombinedData) {
                               if (count === 2) {continueLoop7[i] = false;}
                               if (count === 3) {continueLoop8[i] = false;}
                               if (count === 4) {continueLoop9[i] = false;}
-                              if (count === 5) {continueLoop10[i] = false;}
+                            //   if (count === 5) {continueLoop10[i] = false;}
                           
                               continue;
                             }
