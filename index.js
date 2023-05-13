@@ -27,11 +27,11 @@ window.onload = () => {
 		navigator.serviceWorker.register('/sw.js')
 			.then((registration) => {
 				// successful registration
-				console.log('Service Worker Registration Successful: ', registration);
+				// console.log('Service Worker Registration Successful: ', registration);
 			})
 			.catch((error) => {
 				// failed registration
-				console.log('Service Worker Registration Failed: ', error);
+				// console.log('Service Worker Registration Failed: ', error);
 			});
 	}
 };

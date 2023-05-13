@@ -2,7 +2,7 @@ import { setCurrentUser } from '../load.js';
 import { closeDB } from '../utils/localDatabase.js';
 
 export function loadSettings() {
-  console.log('Loading settings')
+//   console.log('Loading settings')
   var htmlCode = /*html*/
   `
         <div class="container mt-4">

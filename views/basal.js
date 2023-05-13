@@ -1,7 +1,7 @@
 import { updateChart } from "../utils/updateChart.js";
 import { combineData } from "../calculations/createCombinedData.js";
 import { getAverageCombinedData } from "../calculations/createAvgCombinedData.js";
-import { adjustBasalRates } from "../calculations/adjustBasal.js";
+import { adjustBasalRatesUsingTemps, adjustBasalRatesUsingProfileBasals } from "../calculations/adjustBasal.js";
 import { showLoadingAnimation, hideLoadingAnimation } from "../utils/loadingAnimation.js";
 
 export function loadBasal() {
@@ -10,7 +10,7 @@ export function loadBasal() {
     `
         <div>
             <h2>Adjust Basal Rates</h2>
-            <button type="button" class="btn btn-primary" id="selectDatesButton">Select dates</button>
+            <button type="button" class="btn btn-primary" id="selectDatesButton">Select Dates</button>
             <table id="dataTable"></table>
         </div>
         <div class="modal fade" id="dateSelectionModal" tabindex="-1" role="dialog" aria-labelledby="dateSelectionModalLabel" aria-hidden="true">
@@ -31,10 +31,16 @@ export function loadBasal() {
                                 <div id="datepicker-container" class="mx-auto mb-3">
                                     <div id="datepicker" class="form-control"></div>
                                 </div>
-                                <!-- <div class="form-check form-check-inline">
-                                   <input class="form-check-input" type="checkbox" value="" id="includeTempBasal" checked />
-                                    <label class="form-check-label" for="includeTempBasal">Calculate basal adjustments based the temp basal insulin delivery averages.</label>
-                                </div>-->
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" value="true" id="includeTempBasal" checked />
+                                    <label class="form-check-label" for="includeTempBasal">Calculate basal adjustments based on actual basal delivery (Include temp basal).</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" value="" id="useProfileBasal" />
+                                    <label class="form-check-label" for="useProfileBasal">Calculate basal adjustments based on the published basal rate schedule (Do not adjust for temp basal).</label>
+                                </div>
+
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -44,8 +50,9 @@ export function loadBasal() {
             </div>
         </div>
     `;
-// TODO: Allow user to only use profile data for basal adjustment
+
     document.getElementById("main").innerHTML = htmlCode;
+
     const dateSelectionModal = new bootstrap.Modal(document.getElementById("dateSelectionModal"));
     var selectedDates = [];
     var preventChangeEvent = false; // Add a flag to prevent changeDate event from re-triggering
@@ -116,12 +123,21 @@ export function loadBasal() {
         
             // Execute the code for adjusting basal rates
             let AverageCombinedData = await getAverageCombinedData(selectedDates);
-            let Basal = await adjustBasalRates(AverageCombinedData);
-            const tempBasal = Basal.tempBasal;
-            const adjustedBasal = Basal.adjustedBasal;
+            if (includeTempBasal.checked) {
+                let Basal = await adjustBasalRatesUsingTemps(AverageCombinedData);
+                const tempBasal = Basal.tempBasal;
+                const adjustedBasal = Basal.adjustedBasal;
+                loadBasalsTable(tempBasal, adjustedBasal);
+              } else {
+                let Basal = await adjustBasalRatesUsingProfileBasals(AverageCombinedData);
+                const tempBasal = Basal.tempBasal;
+                const adjustedBasal = Basal.adjustedBasal;
+                loadBasalsTable(tempBasal, adjustedBasal);
+              }
+            
             
             hideModal('dateSelectionModal')
-            loadBasalsTable(tempBasal, adjustedBasal);
+
             hideLoadingAnimation();
         }); 
               
@@ -149,6 +165,7 @@ export function loadBasal() {
 
     selectDatesButton.addEventListener("click", () => {
         dateSelectionModal.show();
+        onlyOneCheck();
     });     
       // Initialize the datatable
       initDataTable();
@@ -160,7 +177,7 @@ function initDataTable() {
     // Define the columns for the datatable
     const columns = [
       { title: "Time", className: "text-center"  },
-      { title: "Temp Basal", className: "text-center" },
+      { title: "Previous Basal", className: "text-center" },
       { title: "Adjusted Basal", className: "text-center" },
     ];
   
@@ -187,7 +204,7 @@ var htmlCode =
       <thead>
         <tr>
           <th>Time</th>
-          <th>Temp Basal&shy;(U/hr)</th>
+          <th>Previous Basal&shy;(U/hr)</th>
           <th>Adjusted Basal&shy;(U/hr)</th>
         </tr>
       </thead>
@@ -198,7 +215,7 @@ var htmlCode =
   // Define the columns for the datatable
 const columns = [
     { title: "Time" },
-    { title: "Temp Basal" },
+    { title: "Previous Basal" },
     { title: "Adjusted Basal" },
   ];
   
@@ -218,6 +235,26 @@ const columns = [
   dataTable.rows.add(data);
   dataTable.draw();
 
+}
+
+function onlyOneCheck() {
+    // Get references to the checkboxes
+    const includeTempBasal = document.getElementById('includeTempBasal');
+    const useProfileBasal = document.getElementById('useProfileBasal');
+
+    // Add event listener to the first checkbox
+    includeTempBasal.addEventListener('change', function() {
+    if (this.checked) {
+        useProfileBasal.checked = false; // Uncheck the second checkbox
+    }
+    });
+
+    // Add event listener to the second checkbox
+    useProfileBasal.addEventListener('change', function() {
+    if (this.checked) {
+        includeTempBasal.checked = false; // Uncheck the first checkbox
+    }
+    });
 }
 
   
