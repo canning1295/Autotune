@@ -146,13 +146,7 @@ export function loadBasal() {
 			console.error(`Element with ID '${modalElementId}' not found.`);
 		}
 	}
-      
 
-
-    
-    // Show the modal automatically when the page loads
-    dateSelectionModal.show();
-    
     selectDatesButton.addEventListener("click", () => {
         dateSelectionModal.show();
     });     

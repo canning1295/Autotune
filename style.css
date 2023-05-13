@@ -17,7 +17,6 @@
 			display: flex;
 			flex-direction: column;
 			overflow-y: auto;
-			/* align-items: center; */
 			}
 	/* 
 	BEGIN CSS FOR BASAL
@@ -27,29 +26,25 @@
 			color: white !important;
 		}
 
-			/* Adjust the size of the datepicker container */
 		.datepicker {
 			width: 75%;
-			margin: 0 auto; /* Center the datepicker */
+			margin: 0 auto; 
 			}
 			
-			/* Adjust the size of the calendar table */
-			.datepicker table {
+		.datepicker table {
 			width: 100%;
-			}
+		}
 			
-			/* Add borders around the date cells */
-			.datepicker-days td.day {
+		.datepicker-days td.day {
 			border: 1px solid #ccc;
-			padding: 8px; /* Increase padding to make dates bigger */
-			}
-/* 
-BEGIN CSS FOR ICR
-*/
-#reference{
-	margin-top: 20px;
-}
-/* 		
+			padding: 8px; 
+		}
+	/* 
+	BEGIN CSS FOR ICR
+	*/
+	#reference{
+		margin-top: 20px;
+	}
 	/* 
 	BEGIN CSS FOR SETTINGS
 	*/
@@ -80,43 +75,39 @@ BEGIN CSS FOR ICR
 	/* 
 	BEGIN CSS FOR FOOTER/MENU
 	*/
-		#footer {
-			display: flex;
-			justify-content: space-evenly;
-			align-items: center;
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 10%;
-			background-color: #fff;
-			box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-			background-color: rgb(33, 33, 33);
-			}
-			
-			.menu-button {
-			height: 45px;
-			width: 45px;
-			border-radius: 5px;
-			box-shadow: 3px;
-			}
-
-			.icon {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 25px;
-			height: 25px;
-			}
+	#footer {
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 10%;
+		background-color: #fff;
+		box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+		background-color: rgb(33, 33, 33);
+	  }
+	  
+	  .menu-button {
+		height: 45px;
+		width: 45px;
+		border-radius: 5px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: calc(0.9 * 45px);  // This sets the font size to be 90% of the button height
+	}
+	  
 	/*
 	BEGIN CSS FOR LOADING ANIMATION
 	*/
 		#loading-container {
-			display: none; /* hide the container by default */
+			display: none; 
 		}
 
 		#loading-container.show {
-			display: flex; /* show the container when the "show" class is added */
+			display: flex; 
 		}
 
 		.center {
@@ -192,11 +183,11 @@ BEGIN CSS FOR ICR
 			width: 100%;
 			height: 100%;
 			background-color: rgba(0, 0, 0, 0.5);
-			z-index: 9999; /* make sure the overlay is on top of other elements */
+			z-index: 9999; 
 		}
 }
 
-/* ------------------------BEGIN DESKTOP STYLING----------------------- */
+/* ----------------------------------------------BEGIN DESKTOP STYLING--------------------------------------------- */
 	/* 
 	BEGIN CSS FOR BODY
 	*/
@@ -315,34 +306,30 @@ BEGIN CSS FOR SETTINGS
 /* 
 BEGIN CSS FOR FOOTER/MENU
 */
-	#footer {
-		display: flex;
-		justify-content: space-evenly;
-		align-items: center;
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 10%;
-		background-color: #fff;
-		box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-		background-color: rgb(33, 33, 33);
-		}
-		
-		.menu-button {
-		height: 45px;
-		width: 45px;
-		border-radius: 5px;
-		box-shadow: 3px;
-		}
-
-		.icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 25px;
-		height: 25px;
-		}
+#footer {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 10%;
+	background-color: #fff;
+	box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+	background-color: rgb(33, 33, 33);
+  }
+  
+  .menu-button {
+    height: 45px;
+    width: 45px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: calc(0.7 * 45px);  
+}
+  
 /*
 BEGIN CSS FOR LOADING ANIMATION
 */
@@ -427,5 +414,5 @@ BEGIN CSS FOR LOADING ANIMATION
 		width: 100%;
 		height: 100%;
 		background-color: rgba(0, 0, 0, 0.5);
-		z-index: 9999; /* make sure the overlay is on top of other elements */
+		z-index: 9999; 
 	}
