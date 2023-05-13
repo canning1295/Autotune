@@ -96,7 +96,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		font-size: calc(0.9 * 45px);  // This sets the font size to be 90% of the button height
+		font-size: calc(0.9 * 45px);
 	}
 	  
 	/*
