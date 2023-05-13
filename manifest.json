@@ -11,12 +11,12 @@
       "src": "icon.png",
       "sizes": "96x96",
       "type": "image/svg+xml"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
     }
-    // {
-    //   "src": "icon.svg",
-    //   "sizes": "64x64",
-    //   "type": "image/svg+xml"
-    // }
   ],
   "scope": "/"
 }
