@@ -74,9 +74,9 @@ export function loadBasal() {
         $("#datepicker").on("changeDate", function (e) {
             if (preventChangeEvent) return; // Return early if the flag is set
             var selectedDate = e.date;
-            // if (selectedDate >= new Date(Date.now() - 86400000)) {
-            //     return;
-            //   }// do not allow selection of today or future dates
+            if (selectedDate >= new Date(Date.now() - 86400000)) {
+                return;
+              }// do not allow selection of today or future dates
             if (selectedDates.some(date => date.getTime() === selectedDate.getTime())) {
                 // Remove date from array if already selected
                 selectedDates = selectedDates.filter(date => date.getTime() !== selectedDate.getTime());
@@ -107,10 +107,10 @@ export function loadBasal() {
 
         // Add event listener to the "Run" button
         document.getElementById("calculate-basals").addEventListener("click", async () => {
-            if(selectedDates.length < 2) {
-                alert('Please select at least 2 dates to run the basal rate adjustment calculations.'); 
-                return;
-            }
+            // if(selectedDates.length < 2) {
+            //     alert('Please select at least 2 dates to run the basal rate adjustment calculations.'); 
+            //     return;
+            // }
             // Show the loading animation
             showLoadingAnimation();
         
