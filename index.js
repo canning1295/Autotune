@@ -18,7 +18,23 @@ export const options = {
 	diaAdjustment: NaN,
 };
 
-window.onload = () => start();
+window.onload = () => {
+	start();
+
+	// check if service workers are supported
+	if ('serviceWorker' in navigator) {
+		// register the service worker
+		navigator.serviceWorker.register('/sw.js')
+			.then((registration) => {
+				// successful registration
+				console.log('Service Worker Registration Successful: ', registration);
+			})
+			.catch((error) => {
+				// failed registration
+				console.log('Service Worker Registration Failed: ', error);
+			});
+	}
+};
 
 async function start() {
 	localStorage.setItem("autotuneView", "settings")
@@ -29,7 +45,7 @@ async function start() {
 		document.getElementById('current-user-select').innerText = userArray.username
 		setCurrentUser(userArray)
 		await initializeDB()
-        loadNavMenu()
-        options.profiles = (await getUserProfiles()).reverse();
+		loadNavMenu()
+		options.profiles = (await getUserProfiles()).reverse();
 	}
 };
