@@ -71,9 +71,9 @@ export function loadISF() {
         $("#datepicker").on("changeDate", function (e) {
             if (preventChangeEvent) return; // Return early if the flag is set
             var selectedDate = e.date;
-            if (selectedDate >= new Date(Date.now() - 86400000)) {
-                return;
-            }// do not allow selection of today or future dates
+            // if (selectedDate >= new Date(Date.now() - 86400000)) {
+            //     return;
+            // }// do not allow selection of today or future dates
             if (selectedDates.some(date => date.getTime() === selectedDate.getTime())) {
                 // Remove date from array if already selected
                 selectedDates = selectedDates.filter(date => date.getTime() !== selectedDate.getTime());
