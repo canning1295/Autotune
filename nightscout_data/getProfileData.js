@@ -15,7 +15,7 @@ export async function getUserProfiles() {
 		const profileData = (await response.json()).reverse()
 		profiles = await setProfiles(profileData)
 	}
-	console.log('profiles', profiles)
+	// console.log('profiles', profiles)
 	return profiles
 }
 

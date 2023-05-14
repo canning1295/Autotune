@@ -37,11 +37,7 @@ window.onload = () => {
 };
 
 async function start() {
-	console.log('Starting Autotune')
-	localStorage.removeItem("autotuneView")
-	console.log('Current view', localStorage.getItem("autotuneView"))
 	localStorage.setItem("autotuneView", "settings")
-	console.log('Current view', localStorage.getItem("autotuneView"))
 	loadSettings()
 	let userArray = JSON.parse(localStorage.getItem('autotune_currentUser'))
 	if (!userArray) safetyMessage()
