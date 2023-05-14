@@ -1,13 +1,10 @@
-
-
-/* ----------------------------------------------BEGIN DESKTOP STYLING--------------------------------------------- */
-	/* 
-	BEGIN CSS FOR BODY
-	*/
-	body, html {
-		height: 100%;
-		margin: 0;
-	}
+/* 
+BEGIN CSS FOR BODY
+*/
+body, html {
+	height: 100%;
+	margin: 0;
+}
 	/* 
 BEGIN CSS FOR MAIN
 */
