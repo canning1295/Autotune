@@ -9,8 +9,9 @@ export async function getUserProfiles() {
 		!profiles || await getTimestamp('Profiles', options.user) < new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split("T")[0]
 	) {
 		console.log("Getting profiles from Nightscout...")
-		const response = await fetch(options.url + "/api/v1/profile.json?count=10000000")
 		console.log('url', options.url + "/api/v1/profile.json?count=10000000")
+		const response = await fetch(options.url + "/api/v1/profile.json?count=10000000")
+		
 		const profileData = (await response.json()).reverse()
 		profiles = await setProfiles(profileData)
 	}
