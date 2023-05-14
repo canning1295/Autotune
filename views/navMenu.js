@@ -9,17 +9,21 @@ export function loadNavMenu() {
         let autotuneView = localStorage.getItem("autotuneView");
         if (localStorage.getItem("autotune_currentUser").length > 0) {
             if (autotuneView !== "settings" && autotuneView !== "settings") {
-                console.log('Loading settings')
+                // console.log('Loading settings')
                 loadSettings();
+                localStorage.removeItem("autotuneView")
                 localStorage.setItem("autotuneView", "settings");
             }
         }
     }
     function basal() {
+
         let autotuneView = localStorage.getItem("autotuneView");
         if (localStorage.getItem("autotune_currentUser").length > 0 && autotuneView !== "basal") {
             if (autotuneView !== "basal") {
+                console.log('Loading basal')
                 loadBasal();
+                localStorage.removeItem("autotuneView")
                 localStorage.setItem("autotuneView", "basal");
             }
         }
@@ -29,6 +33,7 @@ export function loadNavMenu() {
         if (localStorage.getItem("autotune_currentUser").length > 0 && autotuneView !== "icr") {
             if (autotuneView !== "icr") {
                 loadICR();
+                localStorage.removeItem("autotuneView")
                 localStorage.setItem("autotuneView", "icr");
             }
         }
@@ -38,11 +43,12 @@ export function loadNavMenu() {
         if (localStorage.getItem("autotune_currentUser").length > 0 && autotuneView !== "isf") {
             if (autotuneView !== "isf") {
                 loadISF();
+                localStorage.removeItem("autotuneView")
                 localStorage.setItem("autotuneView", "isf");
             }
         }
     }
-    // JavaScript code to insert HTML into the "main" div
+
     var htmlCode = /*html*/
         `
             <button type="button" id="basal-button" class="menu-button">💉</button>

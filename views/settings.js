@@ -235,7 +235,6 @@ export function loadSettings() {
         users.push({ username, url, targetBG, lowTargetBG, weight, adjustmentFactor, diaAdjustment });
         localStorage.setItem('autotune_users', JSON.stringify(users));
         let currentUser = { username, url, targetBG, lowTargetBG, weight, adjustmentFactor, diaAdjustment}
-        // console.log('currentUser:', currentUser)
         setCurrentUser(currentUser);
         //   localStorage.setItem('autotune_currentUser', JSON.stringify(currentUser));
         document.getElementById('current-user-select').innerHTML = username;

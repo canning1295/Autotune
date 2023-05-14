@@ -114,14 +114,7 @@ export function loadBasal() {
 
         // Add event listener to the "Run" button
         document.getElementById("calculate-basals").addEventListener("click", async () => {
-            // if(selectedDates.length < 2) {
-            //     alert('Please select at least 2 dates to run the basal rate adjustment calculations.'); 
-            //     return;
-            // }
-            // Show the loading animation
             showLoadingAnimation();
-        
-            // Execute the code for adjusting basal rates
             let AverageCombinedData = await getAverageCombinedData(selectedDates);
             if (includeTempBasal.checked) {
                 let Basal = await adjustBasalRatesUsingTemps(AverageCombinedData);

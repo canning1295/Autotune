@@ -1,3 +1,5 @@
+// Credit: https://codepen.io/jackrugile/pen/JddmaX
+
 export function showLoadingAnimation() {
   // Create a new div to show the loading animation
   const loaderDiv = document.createElement('div');
@@ -53,7 +55,7 @@ const htmlLoader =
         position: fixed;
         right: 0;
         top: 0;
-        z-index: 99999;
+        z-index: 9999999;
     }
 
     .loader-inner {
