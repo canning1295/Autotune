@@ -1,5 +1,4 @@
 import { setCurrentUser } from '../load.js';
-import { closeDB } from '../utils/localDatabase.js';
 
 export function loadSettings() {
 //   console.log('Loading settings')
@@ -45,7 +44,7 @@ export function loadSettings() {
                         </div>
                         <div class="mb-3">
                             <label for="url" class="form-label" style="font-weight: bold;">URL</label>
-                            <input type="text" placeholder="https://yoursite.com" class="form-control" id="url" required>
+                            <input type="text" placeholder="https://yoursite.com" class="form-control" id="url" autocorrect="off" autocomplete="off" autocapitalize="none" required>
                         </div>
                         <div class="mb-3">
                             <label for="targetBG" class="form-label" style="font-weight: bold;">Target BG</label>
@@ -99,14 +98,6 @@ export function loadSettings() {
     
     `
     document.getElementById('main').innerHTML = htmlCode;
-
-    function toLowerCase(input) {
-        input.value = input.value.toLowerCase();
-    }
-
-    document.getElementById('url').addEventListener('input', function() {
-        toLowerCase(this);
-    });
 
     let users = JSON.parse(localStorage.getItem('autotune_users')) || [];
 
@@ -182,7 +173,6 @@ export function loadSettings() {
                 tableData.push($(this).text());
             });
             localStorage.removeItem('autotune_currentUser');
-            await closeDB()
             let usersList = localStorage.getItem('autotune_users');
             let users = usersList ? JSON.parse(usersList) : [];
             
