@@ -52,7 +52,7 @@ BEGIN CSS FOR BASAL
 
 	/* Adjust the size of the datepicker container */
 	.datepicker {
-		width: 75%;
+		width: 100%;
 		margin: 0 auto; /* Center the datepicker */
 	}
 	
@@ -67,13 +67,14 @@ BEGIN CSS FOR BASAL
 		padding: 8px; /* Increase padding to make dates bigger */
 	}
 	#datepicker-container {
-		max-width: 90%;
+		max-width: 100%;
 		margin: 0 auto;
 	}
 	
 	.form-check-input {
 		margin-right: 0px;
 	}
+	
 /* 
 BEGIN CSS FOR ICR
 */
