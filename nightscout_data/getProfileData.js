@@ -4,16 +4,17 @@ import { options } from "../index.js"
 let profileData = undefined
 
 export async function getUserProfiles() {
-	const profiles = await getData("Profiles", options.user)
+	let profiles = await getData("Profiles", options.user)
 	if (
 		!profiles || await getTimestamp('Profiles', options.user) < new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split("T")[0]
 	) {
 		console.log("Getting profiles from Nightscout...")
 		const response = await fetch(options.url + "/api/v1/profile.json?count=10000000")
+		console.log('url', options.url + "/api/v1/profile.json?count=10000000")
 		const profileData = (await response.json()).reverse()
-		let updatedProfiles = await setProfiles(profileData)
-		return updatedProfiles
+		profiles = await setProfiles(profileData)
 	}
+	console.log('profiles', profiles)
 	return profiles
 }
 
