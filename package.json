@@ -3,7 +3,7 @@
   "lockfileVersion": 2,
   "requires": true,
   "packages": {},
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Fine tune pump basal rates, IC ratio, and ISF.",
   "main": "index.js",
   "scripts": {
