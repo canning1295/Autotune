@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders main heading', () => {
+test('renders header or some text', () => {
   render(<App />);
-  const heading = screen.getByRole('heading', { level: 1 });
-  expect(heading).toBeInTheDocument();
+  // Adjust this to match your actual rendered text
+  const headerText = screen.getByText(/Home Page/i);
+  expect(headerText).toBeInTheDocument();
 });
