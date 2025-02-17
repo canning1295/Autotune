@@ -1,7 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "composite": true
+    "composite": true,
+    "module": "CommonJS",
+    "target": "ESNext",
+    "noEmit": false, // Enabled emit output
+    "strict": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["node"]
 }
