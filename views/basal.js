@@ -59,22 +59,43 @@ export function loadBasal() {
     $(document).ready(async function () {
         // Initialize datepicker
         $("#datepicker").datepicker({
-          format: "yyyy-mm-dd",
-          autoclose: false,
-          todayHighlight: true,
-          keepOpen: true, // keep calendar open after date selection
-          container: "#datepicker",
-          keyboardNavigation: false,
-          gotoCurrent: true,
-          beforeShowDay: function (date) {
-            for (var i = 0; i < selectedDates.length; i++) {
-              // Check if date is in the selectedDates array
-              if (date.getTime() === selectedDates[i].getTime()) {
-                return { classes: "selected-date" }; // add selected-date class to selected dates
-              }
-            }
-            return;
-          },
+            format: "yyyy-mm-dd",
+            autoclose: false,
+            todayHighlight: true,
+            keepOpen: true, // keep calendar open after date selection
+            container: "#datepicker",
+            keyboardNavigation: false,
+            gotoCurrent: true,
+            beforeShowDay: function (date) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const compareDate = new Date(date);
+                compareDate.setHours(0, 0, 0, 0);
+                
+                // Disable today and all future dates
+                if (compareDate >= today) {
+                    return {
+                        enabled: false,
+                        classes: 'disabled-date',
+                        tooltip: 'Unavailable'
+                    };
+                }
+                // Highlight selected dates
+                for (var i = 0; i < selectedDates.length; i++) {
+                    if (date.getTime() === selectedDates[i].getTime()) {
+                        return {
+                            enabled: true,
+                            classes: 'selected-date',
+                            tooltip: 'Selected date'
+                        };
+                    }
+                }
+                return {
+                    enabled: true,
+                    classes: '',
+                    tooltip: ''
+                };
+            },
         });
       
         // Add selected date to array and display it on the page

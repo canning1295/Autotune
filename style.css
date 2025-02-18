@@ -74,8 +74,23 @@ BEGIN CSS FOR BASAL
 	.form-check-input {
 		margin-right: 0px;
 	}
+
+		.disabled-date {
+		background-color: #f0f0f0 !important;
+		color: #ccc !important;
+		cursor: not-allowed !important;
+	}
 	
-/* 
+	.disabled-date span {
+		color: #ccc !important;
+		text-decoration: line-through;
+	}
+	
+	.datepicker table tr td.disabled-date:hover {
+		background-color: #f0f0f0 !important;
+		cursor: not-allowed !important;
+	}
+	/* 
 BEGIN CSS FOR ICR
 */
 	#reference{
