@@ -52,18 +52,39 @@ export function loadISF() {
             format: "yyyy-mm-dd",
             autoclose: false,
             todayHighlight: true,
-            keepOpen: true, // keep calendar open after date selection
+            keepOpen: true,
             container: "#datepicker",
             keyboardNavigation: false,
             gotoCurrent: true,
             beforeShowDay: function (date) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const compareDate = new Date(date);
+                compareDate.setHours(0, 0, 0, 0);
+                
+                // Disable today and all future dates
+                if (compareDate >= today) {
+                    return {
+                        enabled: false,
+                        classes: 'disabled-date',
+                        tooltip: 'Unavailable'
+                    };
+                }
+                // Highlight selected dates
                 for (var i = 0; i < selectedDates.length; i++) {
-                    // Check if date is in the selectedDates array
                     if (date.getTime() === selectedDates[i].getTime()) {
-                        return { classes: "selected-date" }; // add selected-date class to selected dates
+                        return {
+                            enabled: true,
+                            classes: 'selected-date',
+                            tooltip: 'Selected date'
+                        };
                     }
                 }
-                return; 
+                return {
+                    enabled: true,
+                    classes: '',
+                    tooltip: ''
+                };
             },
         });
 
