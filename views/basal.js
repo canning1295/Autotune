@@ -32,12 +32,12 @@ export function loadBasal() {
                                     <div id="datepicker" class="form-control"></div>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" value="true" id="includeTempBasal" checked />
+                                    <input class="form-check-input" type="checkbox" value="true" id="includeTempBasal" />
                                     <label class="form-check-label" for="includeTempBasal">Calculate basal adjustments based on actual basal delivery (Include temp basal).</label>
                                 </div>
 
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" value="" id="useProfileBasal" />
+                                    <input class="form-check-input" type="checkbox" value="" id="useProfileBasal" checked/>
                                     <label class="form-check-label" for="useProfileBasal">Calculate basal adjustments based on the published basal rate schedule (Do not adjust for temp basal).</label>
                                 </div>
 

@@ -76,9 +76,33 @@ export async function combineData(selectedDate) {
             insulinDelivered += deliveredInsulin;
         }
 
-        // Calculate the actualBasal in units per hour
-        let actualBasal = (insulinDelivered / 5) * 60; // Convert back to units per hour
-        let bolusInsulin = getAverageInsulinForTime(bolusWindows, startFiveMinWindow)
+        // Fetch the bolus insulin for this 5-minute window as before:
+        let bolusInsulin = getAverageInsulinForTime(bolusWindows, startFiveMinWindow);
+
+        // New: Determine if some or all of that bolus insulin is actually "basal" microbolus
+        // For example, filter the boluses array or add your own logic to detect microbolus events:
+        function getMicroBolusForTime(bolusData, startTime) {
+            let microBolusAmount = 0;
+            for (let bolus of bolusData) {
+                // Example: treat small bolus with no carbs within ~10min as microbolus
+                if (
+                    bolus.insulin <= 1.0 &&
+                    bolus.timestamp >= startTime &&
+                    bolus.timestamp < new Date(startTime.getTime() + 5 * 60000) &&
+                    bolus.carbs < 5 // check for negligible carb input
+                ) {
+                    microBolusAmount += bolus.insulin;
+                }
+            }
+            return microBolusAmount;
+        }
+
+        // Inside your main loop for each 5-minute block:
+        let microBolusDelivered = getMicroBolusForTime(bolusData, startFiveMinWindow) || 0;
+        insulinDelivered += microBolusDelivered;
+
+        // Now calculate actualBasal the usual way, but it includes microboluses:
+        let actualBasal = (insulinDelivered / 5) * 60; 
 
         // Save the combined data for each time slot
         combinedData.push({
