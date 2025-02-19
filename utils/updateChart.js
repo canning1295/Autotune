@@ -5,13 +5,14 @@ export async function updateChart(date) {
     // set <p id="instruct1"> to display: none
     document.getElementById("instruct1").style.display = "none";
     // Format date as a string YYYY-MM-DD
+
     let key = date.toISOString().slice(0, 10);
+
     let objectStoreName = 'BGs';
 
     // First try to get the data from the local database
     let bgData = await getData(objectStoreName, key);
     // console.log('local bgData: ', bgData);
-
     // If the data is not in the local database, fetch it from the remote location
     if (bgData === null) {
         bgData = await getBGs(date);
@@ -38,7 +39,7 @@ export async function updateChart(date) {
                 labels: chartLabels,
                 datasets: [
                     {
-                        label: `BGs for ${key}`,
+                        label: `BGs for ${new Date(date.getTime() + 86400000).toISOString().slice(0, 10)}`,
                         data: chartData,
                         borderColor: "rgba(255, 99, 132, 1)",
                         backgroundColor: "rgba(255, 99, 132, 0.2)",

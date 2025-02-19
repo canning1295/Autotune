@@ -11,7 +11,6 @@ export async function combineData(selectedDate) {
     let bgData = await getBGs(selectedDate);
     let deliveredBasals = await getTempBasalData(selectedDate);
     let bolusData = await getAllBoluses(selectedDate);
-    // console.log('boluses: ', boluses)
     let bolusWindows = getInsulinDataByTimeWindow(bolusData, selectedDate, options.bolusTimeWindow)
     let combinedData = [];
 
@@ -31,9 +30,8 @@ export async function combineData(selectedDate) {
         const matchingData = bgData.find(data => (new Date(data.time)).getTime() === date.getTime());
         if (matchingData) {
             bg = matchingData.bg;
-          }
-        // if(!matchingData) {console.log('No matching data for: ', date)}
-        startFiveMinWindow = date
+        }
+        startFiveMinWindow = date;
         endFiveMinWindow = new Date(startFiveMinWindow.getTime() + 5 * 60000);
         
         let profile = options.profiles.find(
@@ -51,7 +49,6 @@ export async function combineData(selectedDate) {
 
         let insulinDelivered = 0;
         let totalOverlapDuration = 0;
-        // console.log('deliveredBasals: ', deliveredBasals)
         deliveredBasals.forEach((deliveredBasal) => {
             let tempStart = new Date(deliveredBasal.created_at);
             let tempEnd = new Date(tempStart.getTime() + deliveredBasal.duration * 60 * 1000);
@@ -59,37 +56,34 @@ export async function combineData(selectedDate) {
             if (tempStart <= endFiveMinWindow && tempEnd >= startFiveMinWindow) {
                 let overlapStart = tempStart < startFiveMinWindow ? startFiveMinWindow : tempStart;
                 let overlapEnd = tempEnd > endFiveMinWindow ? endFiveMinWindow : tempEnd; 
-                let overlapDuration = (overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60); // in minutes
+                let overlapDuration = (overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60);
                 totalOverlapDuration += overlapDuration;
 
-                // Calculate the insulin delivered during the overlapping time
-                let deliveredRate = deliveredBasal.rate; // in units per hour
-                let deliveredInsulin = (deliveredRate / 60) * overlapDuration; // in units
+                let deliveredRate = deliveredBasal.rate; // units/hr
+                let deliveredInsulin = (deliveredRate / 60) * overlapDuration;
                 insulinDelivered += deliveredInsulin;
             }
         });
 
-        // Calculate insulin delivered by default profileBasal if it was active during the remaining time
+        // Calculate insulin delivered by default profileBasal if it was active for any leftover minutes
         if (totalOverlapDuration < 5) {
-            let remainingDuration = 5 - totalOverlapDuration; // in minutes
-            let deliveredInsulin = (profileBasal / 60) * remainingDuration; // in units
+            let remainingDuration = 5 - totalOverlapDuration;
+            let deliveredInsulin = (profileBasal / 60) * remainingDuration;
             insulinDelivered += deliveredInsulin;
         }
 
-        // Fetch the bolus insulin for this 5-minute window as before:
+        // Base bolus insulin for this 5-min block
         let bolusInsulin = getAverageInsulinForTime(bolusWindows, startFiveMinWindow);
 
-        // New: Determine if some or all of that bolus insulin is actually "basal" microbolus
-        // For example, filter the boluses array or add your own logic to detect microbolus events:
+        // Identify microbolus and treat it as part of actualBasal
         function getMicroBolusForTime(bolusData, startTime) {
             let microBolusAmount = 0;
             for (let bolus of bolusData) {
-                // Example: treat small bolus with no carbs within ~10min as microbolus
                 if (
                     bolus.insulin <= 1.0 &&
                     bolus.timestamp >= startTime &&
                     bolus.timestamp < new Date(startTime.getTime() + 5 * 60000) &&
-                    bolus.carbs < 5 // check for negligible carb input
+                    bolus.carbs < 5
                 ) {
                     microBolusAmount += bolus.insulin;
                 }
@@ -97,14 +91,19 @@ export async function combineData(selectedDate) {
             return microBolusAmount;
         }
 
-        // Inside your main loop for each 5-minute block:
         let microBolusDelivered = getMicroBolusForTime(bolusData, startFiveMinWindow) || 0;
         insulinDelivered += microBolusDelivered;
 
-        // Now calculate actualBasal the usual way, but it includes microboluses:
+        // Subtract microbolus from bolusInsulin to avoid double counting
+        if (bolusInsulin > microBolusDelivered) {
+            bolusInsulin -= microBolusDelivered;
+        } else {
+            bolusInsulin = 0;
+        }
+
+        // Actual basal includes microbolus
         let actualBasal = (insulinDelivered / 5) * 60; 
 
-        // Save the combined data for each time slot
         combinedData.push({
             time: startFiveMinWindow,
             bolusInsulin,
@@ -117,7 +116,6 @@ export async function combineData(selectedDate) {
             lowTarget,
         });
 
-        // Add 5 minutes to date
         date = new Date(date.getTime() + 5 * 60000);
     }
 
@@ -125,14 +123,15 @@ export async function combineData(selectedDate) {
     let key = selectedDate.toISOString().slice(0, 10);
     let timestamp = new Date();
     await saveData("Combined_Data", key, combinedData, timestamp);
-        const sumBolusInsulin = combinedData.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.bolusInsulin;
-        }, 0);
-        const sumBasalInsulin = combinedData.reduce((accumulator, currentValue) => {
-            return accumulator + (currentValue.actualBasal / 12);
-        }, 0)
-        const dailyInsulinTotal = sumBolusInsulin + sumBasalInsulin;
-        saveData("Daily_Bolus_Total", key, sumBolusInsulin, timestamp);
-        saveData("Daily_Basal_Total", key, sumBasalInsulin, timestamp);
-        saveData("Daily_Insulin_Total", key, dailyInsulinTotal, timestamp); 
+    const sumBolusInsulin = combinedData.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.bolusInsulin;
+    }, 0);
+    const sumBasalInsulin = combinedData.reduce((accumulator, currentValue) => {
+        return accumulator + (currentValue.actualBasal / 12);
+    }, 0);
+    const dailyInsulinTotal = sumBolusInsulin + sumBasalInsulin;
+
+    saveData("Daily_Bolus_Total", key, sumBolusInsulin, timestamp);
+    saveData("Daily_Basal_Total", key, sumBasalInsulin, timestamp);
+    saveData("Daily_Insulin_Total", key, dailyInsulinTotal, timestamp);
 }
